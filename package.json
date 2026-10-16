@@ -1,0 +1,17 @@
+{
+  "name": "whittlebrowser",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "bench": "pnpm --filter @whittlebrowser/engine bench",
+    "mcp": "pnpm --filter @whittlebrowser/engine mcp"
+  },
+  "packageManager": "pnpm@10.13.1",
+  "engines": {
+    "node": ">=22"
+  }
+}

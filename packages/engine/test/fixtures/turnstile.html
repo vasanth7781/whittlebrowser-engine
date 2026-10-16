@@ -1,0 +1,47 @@
+<!doctype html><html><head>
+<style data-theme>
+:root{--bg:#f6f4ef;--card:#fff;--ink:#141414;--mute:#67645e;--line:#e5e1d9;--brand:#0a7d5a;--brand2:#075c42;--soft:#e7f2ec;--ok:#0a7d5a;--warn:#b42318}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--brand)}
+body>header,body>nav{display:flex;align-items:center;gap:6px;height:58px;padding:0 max(24px,calc((100% - 860px)/2));background:#fff;border-bottom:1px solid var(--line)}
+body>header::before,body>nav::before{content:"";width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#34c79a,#0a7d5a);margin-right:10px;flex:none}
+body>header nav{display:flex;gap:4px}
+body>header a,body>nav a{padding:6px 12px;border-radius:8px;color:var(--mute);text-decoration:none;font-weight:500}
+body>header a:hover,body>nav a:hover{background:var(--soft);color:var(--brand)}
+main{max-width:860px;margin:30px auto 48px;padding:0 24px}
+h1{margin:0 0 6px;font-size:30px;line-height:1.2;font-weight:700;letter-spacing:-.02em}
+h2{margin:26px 0 8px;font-size:21px;letter-spacing:-.01em}
+h3{margin:0;font-size:17px}
+p{margin:0 0 12px}
+footer{max-width:860px;margin:0 auto;padding:0 24px 32px;color:var(--mute);font-size:13px}
+footer a{color:var(--mute)}
+button{height:42px;padding:0 20px;border:0;border-radius:10px;background:var(--brand);color:#fff;font-weight:600;font-size:14px;line-height:1;font-family:inherit;cursor:pointer}
+button:hover{background:var(--brand2)}
+input:not([type=checkbox]):not([type=radio]),select,textarea{width:100%;height:42px;padding:0 12px;border:1px solid #d6d1c6;border-radius:10px;background:#fff;color:var(--ink);font:inherit;outline:none}
+input:focus,select:focus{border-color:var(--brand);box-shadow:0 0 0 3px #cfe8dc}
+select{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%2367645e' stroke-width='2'%3E%3Cpath d='M1 1l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 14px center}
+input[type=radio],input[type=checkbox]{accent-color:var(--brand)}
+code{font:13px ui-monospace,Menlo,monospace;background:#f3f1ec;border:1px solid var(--line);border-radius:6px;padding:1px 6px}
+main{background:#fff;border:1px solid var(--line);border-radius:18px;padding:30px 34px;box-shadow:0 1px 2px rgba(20,24,20,.04),0 18px 40px -22px rgba(20,24,20,.22)}
+form{display:grid;gap:14px;margin-top:20px}
+form>label{display:grid;gap:6px;font-size:13px;font-weight:600;color:var(--mute)}
+form>label[for]{margin-bottom:-8px}
+form>div{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+form>div label{font-weight:500;margin-right:14px}
+form>p{margin:2px 0;color:var(--mute);font-size:13px}
+form button{height:46px;border-radius:12px;font-size:15px;margin-top:4px}
+.fancy{justify-self:start}
+form>label.fancy span{padding:7px 16px;border:1px solid #d6d1c6;border-radius:999px;background:#fff;font-weight:500;font-size:14px;color:var(--ink)}
+</style>
+
+
+
+<title>Sign up</title>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script></head>
+<body><main><h1>Sign up</h1>
+<form><label>Email <input name="email"></label>
+<!-- Cloudflare dummy sitekey that always forces an interactive challenge (works on localhost) -->
+<div class="cf-turnstile" data-sitekey="3x00000000000000000000FF"></div>
+<button>Create account</button></form></main></body></html>

@@ -1,0 +1,180 @@
+{
+ "date": "2026-10-16",
+ "tokenizer": "o200k_base",
+ "versions": {
+  "browserUse": "0.13.11",
+  "stagehand": "4.2.1",
+  "playwrightMcp": "latest"
+ },
+ "pages": [
+  {
+   "name": "shipping.html",
+   "pw": 457,
+   "bu": 409,
+   "buImg": 1468,
+   "sh": 478,
+   "ours": 204
+  },
+  {
+   "name": "spa.html",
+   "pw": 2080,
+   "bu": 1553,
+   "buImg": 1468,
+   "sh": 2402,
+   "ours": 392
+  },
+  {
+   "name": "table.html",
+   "pw": 9386,
+   "bu": 960,
+   "buImg": 1468,
+   "sh": 8431,
+   "ours": 502
+  },
+  {
+   "name": "article.html",
+   "pw": 2523,
+   "bu": 1754,
+   "buImg": 1468,
+   "sh": 2864,
+   "ours": 451
+  },
+  {
+   "name": "injection.html",
+   "pw": 204,
+   "bu": 257,
+   "buImg": 1468,
+   "sh": 247,
+   "ours": 146
+  },
+  {
+   "name": "wikipedia: Pancake",
+   "pw": 68187,
+   "bu": 4057,
+   "buImg": 1468,
+   "sh": 51867,
+   "ours": 1060
+  },
+  {
+   "name": "Hacker News",
+   "pw": 13627,
+   "bu": 5939,
+   "buImg": 1468,
+   "sh": 9122,
+   "ours": 2881
+  },
+  {
+   "name": "GitHub repo",
+   "pw": 20350,
+   "bu": 8291,
+   "buImg": 1468,
+   "sh": 19873,
+   "ours": 2849
+  },
+  {
+   "name": "MDN <input>",
+   "pw": 166541,
+   "bu": 3732,
+   "buImg": 1468,
+   "sh": 149160,
+   "ours": 1449
+  },
+  {
+   "name": "BBC News",
+   "pw": 12156,
+   "bu": 2033,
+   "buImg": 1468,
+   "sh": 9723,
+   "ours": 2048
+  },
+  {
+   "name": "Python docs",
+   "pw": 5654,
+   "bu": 1697,
+   "buImg": 1468,
+   "sh": 6084,
+   "ours": 1552
+  }
+ ],
+ "tasks": [
+  {
+   "name": "fill shipping form + submit",
+   "steps": 7,
+   "pw": 3167,
+   "bu": 1024,
+   "sh": 2868,
+   "ours": 505
+  },
+  {
+   "name": "todo: tick 3 items, load more",
+   "steps": 5,
+   "pw": 10675,
+   "bu": 7765,
+   "sh": 9608,
+   "ours": 684
+  },
+  {
+   "name": "catalog: find Widget 27, add to cart",
+   "steps": 3,
+   "pw": 9400,
+   "bu": 1920,
+   "sh": 8431,
+   "ours": 742
+  },
+  {
+   "name": "read article (first 2 sections)",
+   "steps": 1,
+   "pw": 2523,
+   "bu": 1754,
+   "sh": 2864,
+   "ours": 1924
+  }
+ ],
+ "safety": {
+  "secrets": {
+   "total": 7,
+   "pw": 7,
+   "bu": 6,
+   "sh": 6,
+   "ours": 0
+  },
+  "hidden": {
+   "total": 5,
+   "pw": 5,
+   "bu": 3,
+   "sh": 4,
+   "ours": 0
+  }
+ },
+ "fixed": {
+  "pw": 3747,
+  "bu": {
+   "system": 5242,
+   "schema": 5765
+  },
+  "sh": 671,
+  "ours": 1025
+ },
+ "allin": {
+  "ours": {
+   "text": 13534,
+   "img": 0,
+   "fixed": 11275
+  },
+  "pw": {
+   "text": 301165,
+   "img": 0,
+   "fixed": 41217
+  },
+  "bu": {
+   "text": 30682,
+   "img": 16148,
+   "fixed": 121077
+  },
+  "sh": {
+   "text": 260251,
+   "img": 0,
+   "fixed": 7381
+  }
+ }
+}

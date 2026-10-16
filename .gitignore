@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.context/
+*.log
+.DS_Store
+bench/results/
+packages/engine/bench/results/
+scratch/
+release/
+dist-engine/
+.venv/
+
+# local end-to-end build of the cloud web app
+dist-e2e/
+
+.env
+.env.local

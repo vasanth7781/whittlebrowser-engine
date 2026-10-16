@@ -1,0 +1,43 @@
+<!doctype html><html><head><title>Acme Console</title>
+<style>
+ body{margin:0;font-family:sans-serif} .topbar{display:flex;gap:16px;align-items:center;padding:12px 20px;background:#222;color:#fff}
+ .nav-links span{margin-right:12px} .layout{display:flex} .sidebar{width:200px;min-height:600px;background:#f4f4f4;padding:12px}
+ .side-item{padding:6px} .content{flex:1;padding:20px} .card{border:1px solid #ddd;border-radius:8px;padding:12px;margin:8px 0;cursor:pointer}
+ .footer{padding:20px;border-top:1px solid #ddd;margin-top:40px} .overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:50;display:flex;align-items:center;justify-content:center}
+ .sheet{background:#fff;padding:24px;border-radius:12px;min-width:320px} .x-btn{display:inline-block;padding:6px 12px;background:#335;color:#fff;margin-right:8px}
+ .menu-panel{position:absolute;right:20px;top:48px;background:#fff;border:1px solid #ccc;z-index:20;padding:6px}
+</style></head><body>
+<div class="topbar"><div class="logo">Acme</div>
+  <div class="nav-links"><span id="n-home">Home</span><span id="n-orders">Orders</span><span id="n-reports">Reports</span><span id="n-settings">Settings</span></div>
+  <div class="menu-trigger" id="more" aria-haspopup="menu">More ▾</div>
+</div>
+<div class="layout">
+  <div class="sidebar"><div class="side-item">Inbox</div><div class="side-item">Drafts</div><div class="side-item">Archive</div></div>
+  <div class="content">
+    <div class="page-title">Recent orders</div>
+    <div class="card" data-id="1001"><div class="card-title">Order #1001</div><div>$42.00 · shipped</div></div>
+    <div class="card" data-id="1002"><div class="card-title">Order #1002</div><div>$18.50 · processing</div></div>
+    <div class="card" data-id="1003"><div class="card-title">Order #1003</div><div>$99.99 · delivered</div></div>
+    <div class="react-row" id="react-like">Download invoice (React)</div>
+  </div>
+</div>
+<div class="footer"><span>© Acme Inc</span> <span class="flink" id="f-privacy">Privacy</span> <span class="flink" id="f-terms">Terms</span></div>
+<script>
+ const on = (el, f) => el.addEventListener('click', f);
+ document.querySelectorAll('.nav-links span,.side-item,.flink').forEach((el) => on(el, () => { document.title = 'Acme · ' + el.textContent; }));
+ document.querySelectorAll('.card').forEach((c) => on(c, () => {
+   const o = document.createElement('div'); o.className = 'overlay';
+   o.innerHTML = `<div class="sheet"><div class="sheet-title" style="font-weight:bold">Order #${c.dataset.id}</div><p>Ships in 2 days.</p><div class="x-btn" id="track">Track package</div><div class="x-btn" id="close">Close</div></div>`;
+   document.body.appendChild(o);
+   o.querySelectorAll('.x-btn').forEach((b) => b.addEventListener('click', () => o.remove()));
+ }));
+ on(document.getElementById('more'), () => {
+   const m = document.createElement('div'); m.className = 'menu-panel';
+   m.innerHTML = '<div class="menu-item">Export CSV</div><div class="menu-item">Print</div>';
+   m.querySelectorAll('.menu-item').forEach((i) => on(i, () => m.remove()));
+   document.body.appendChild(m);
+ });
+ // React-style: handler lives in props on the node, listener is delegated to the root.
+ document.getElementById('react-like').__reactProps$x1 = { onClick: () => { document.title = 'invoice'; } };
+ document.addEventListener('click', (e) => { const p = e.target.__reactProps$x1; if (p && p.onClick) p.onClick(e); });
+</script></body></html>
