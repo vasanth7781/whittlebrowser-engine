@@ -15,13 +15,11 @@ pnpm --filter @whittlebrowser/engine build
 npx playwright-core install chromium     # downloads the browser it drives (once)
 ```
 
-Your tools will run this command. Use the **absolute path** to the file:
+Every MCP client starts the server with a command. From the repository root, `pnpm connect` registers it with Claude Code and prints the JSON for the other clients. To do it by hand, use the **absolute path** to the file:
 
 ```
 node /absolute/path/to/whittlebrowser-engine/packages/engine/dist/mcp/cli.js
 ```
-
-> **Do not run `npx whittlebrowser-mcp`.** That name on npm belongs to a different project, not this one. This package is not on npm yet, so use the path above.
 
 Add flags after the path, for example `--headless` (no window), `--ephemeral` (throwaway profile) or `--budget 4000` (cap tokens per page view). The full list is in
 [Use with Claude Code](claude-code.html).
@@ -201,5 +199,5 @@ await browser.close();
 | The server does not appear | Use the absolute path, Node 22 or newer, and run `pnpm --filter @whittlebrowser/engine build` again after pulling changes |
 | "Executable doesn't exist" | Run `npx playwright-core install chromium` |
 | A keychain prompt for "Chrome for Testing" | That is the standalone browser asking for its cookie store. Add `--headless` or `--ephemeral`, or choose Deny |
-| Pages come back as "AI is off" (⏸) | You are in `--shell` mode and the host app has AI off for that site. Allow it in the host, or leave out `--shell` |
+| Pages come back as "AI is off" (⏸) | You are in `--host` mode and the host app has AI off for that site. Allow it in the host, or leave out `--host` |
 | The model keeps re-reading the page | Add the rules snippet from section 4 |

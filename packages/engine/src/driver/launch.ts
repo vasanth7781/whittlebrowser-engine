@@ -9,7 +9,7 @@ export interface LaunchOptions {
   headless?: boolean;
   /** Persistent profile directory. Default ~/.whittlebrowser/profile. Use null for an ephemeral profile. */
   profileDir?: string | null;
-  /** Attach to an existing browser (e.g. the WhittleBrowser shell) instead of launching. */
+  /** Attach to an existing browser (e.g. a host app such as the desktop browser) instead of launching. */
   cdpUrl?: string;
   /** 'chrome' to drive the installed Google Chrome instead of bundled Chromium. */
   channel?: string;
@@ -54,7 +54,7 @@ export async function launch(o: LaunchOptions = {}): Promise<Launched> {
     context,
     browser,
     async close() {
-      if (o.cdpUrl) await browser?.close().catch(() => {}); // disconnects; the shell keeps running
+      if (o.cdpUrl) await browser?.close().catch(() => {}); // disconnects; the host keeps running
       else {
         await context.close().catch(() => {});
         await browser?.close().catch(() => {});

@@ -17,7 +17,7 @@
     "./package.json": "./package.json"
   },
   "bin": {
-    "whittlebrowser-mcp": "dist/mcp/cli.js"
+    "whittlebrowser": "dist/mcp/cli.js"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",

@@ -14,8 +14,10 @@ Run once, from the repo root (build first: see [Getting started](getting-started
 claude mcp add whittlebrowser -- node "$PWD/packages/engine/dist/mcp/cli.js"
 ```
 
+`pnpm connect` runs exactly this command for you, and `pnpm connect --headless` adds flags.
+
 - This opens its own Chromium window (sites allowed by default; auto-pause and risky-action checks still apply). Add `--headless` for no window.
-- Add `--shell` to attach to a host app that implements the [control protocol](control.html), so that app decides which sites the agent may see and approves risky actions.
+- Add `--host` to attach to a host app that implements the [control protocol](control.html), so that app decides which sites the agent may see and approves risky actions.
 - Add `--scope user` after `add` to make it available in every folder.
 - `claude mcp list` / `claude mcp remove whittlebrowser` to inspect or remove.
 
@@ -35,7 +37,7 @@ claude mcp add whittlebrowser -- node "$PWD/packages/engine/dist/mcp/cli.js"
 
 ## Flags
 
-`--headless`, `--ephemeral`, `--profile DIR`, `--channel chrome`, `--budget N`, `--allow-site HOST`, `--risk confirm|auto|deny`, `--robots off|warn|enforce`, `--default-off`, `--no-identify`, `--allow-file-urls`, `--humanize`, `--show-cursor`, `--no-cursor`, `--xray`, `--bot-key FILE --bot-agent URL`.
+`--headless`, `--ephemeral`, `--profile DIR`, `--channel chrome`, `--budget N`, `--allow-site HOST`, `--risk confirm|auto|deny`, `--robots off|warn|enforce`, `--default-off`, `--no-identify`, `--allow-file-urls`, `--humanize`, `--show-cursor`, `--no-cursor`, `--xray`, `--bot-key FILE --bot-agent URL`, `--host`.
 
 ## Secrets
 

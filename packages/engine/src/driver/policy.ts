@@ -1,6 +1,6 @@
 /**
  * Who decides what the agent may see and do. StaticPolicy is for headless/standalone use (flags and
- * config); ShellPolicy asks the WhittleBrowser shell, where the user sees the AI dot, approval prompts
+ * config); HostPolicy asks the host app (for example the WhittleBrowser desktop browser), where the user sees the AI dot, approval prompts
  * and the "What AI sees" log.
  */
 import { readFileSync, existsSync } from 'node:fs';
@@ -37,7 +37,7 @@ export interface Policy {
   /** Block until the user says they are done (CAPTCHA, login, 2FA). Resolves false on timeout. */
   waitForUser?(reason: string, origin: string, timeoutMs: number): Promise<boolean>;
   log?(ev: AgentEvent): void;
-  /** Open a tab in a host that cannot create targets over CDP (the shell). */
+  /** Open a tab in a host that cannot create targets over CDP (a host app). */
   openTab?(url: string, o?: { background?: boolean; agent?: boolean }): Promise<boolean>;
   /** CDP target ids the agent must never see or touch (e.g. private tabs). */
   excludedTargets?(): Promise<string[]>;
@@ -73,16 +73,16 @@ export class StaticPolicy implements Policy {
   }
 }
 
-/** Talks to the shell's local control server (127.0.0.1, bearer token from ~/.whittlebrowser/shell.json). */
-export class ShellPolicy implements Policy {
+/** Talks to the host app's local control server (127.0.0.1, bearer token from ~/.whittlebrowser/host.json). */
+export class HostPolicy implements Policy {
   constructor(private base: string, private token: string) {}
 
-  static fromDisk(): { policy: ShellPolicy; cdp: string } | null {
-    const f = join(process.env.WB_HOME || join(homedir(), '.whittlebrowser'), 'shell.json');
+  static fromDisk(): { policy: HostPolicy; cdp: string } | null {
+    const f = join(process.env.WB_HOME || join(homedir(), '.whittlebrowser'), 'host.json');
     if (!existsSync(f)) return null;
     try {
       const j = JSON.parse(readFileSync(f, 'utf8')) as { cdpPort: number; controlPort: number; token: string };
-      return { policy: new ShellPolicy(`http://127.0.0.1:${j.controlPort}`, j.token), cdp: `http://127.0.0.1:${j.cdpPort}` };
+      return { policy: new HostPolicy(`http://127.0.0.1:${j.controlPort}`, j.token), cdp: `http://127.0.0.1:${j.cdpPort}` };
     } catch {
       return null;
     }
@@ -95,7 +95,7 @@ export class ShellPolicy implements Policy {
       body: body === undefined ? undefined : JSON.stringify(body),
       signal: AbortSignal.timeout(timeoutMs),
     });
-    if (!res.ok) throw new Error(`shell ${path}: ${res.status}`);
+    if (!res.ok) throw new Error(`host ${path}: ${res.status}`);
     return (await res.json()) as T;
   }
 
@@ -103,7 +103,7 @@ export class ShellPolicy implements Policy {
     try {
       return (await this.req<{ mode: SiteMode }>(`/policy?origin=${encodeURIComponent(origin)}`)).mode;
     } catch {
-      return 'off'; // default-deny when the shell is unreachable
+      return 'off'; // default-deny when the host is unreachable
     }
   }
 

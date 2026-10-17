@@ -42,7 +42,7 @@ export interface SessionOptions {
   downloadsDir?: string;
   /** Files may only be uploaded from here without approval. */
   uploadDir?: string;
-  /** Ignore pages whose URL starts with one of these (e.g. the shell's own UI). */
+  /** Ignore pages whose URL starts with one of these (e.g. a host app's own UI). */
   ignoreUrlPrefixes?: string[];
   /** Animate a ghost cursor + target ring before each action so people can watch the agent. */
   showCursor?: boolean;
@@ -116,7 +116,7 @@ export class Session {
     return !p.isClosed() && !this.hidden.has(p) && !this.opts.ignoreUrlPrefixes.some((x) => u.startsWith(x));
   }
 
-  /** Pages the host says agents must not see (the shell's private tabs). */
+  /** Pages the host says agents must not see (a host app's private tabs). */
   private hidden = new WeakSet<Page>();
   private targetIds = new WeakMap<Page, string>();
   private async refreshHidden() {
@@ -230,7 +230,7 @@ export class Session {
     return s;
   }
 
-  /** Live progress for watchers (shell panel). Not sent to the model, so not counted as tokens. */
+  /** Live progress for watchers (a host app's panel). Not sent to the model, so not counted as tokens. */
   private live(origin: string, text: string) {
     this.policy.log?.({ type: 'step', origin, text: this.privacy.scrub(text), tokens: 0, at: Date.now() });
   }
@@ -341,7 +341,7 @@ export class Session {
     if (assessment.level === 'pause') {
       return {
         assessment,
-        block: `⏸ AI auto-paused on ${hostOf(url)}: ${assessment.reasons.join(', ')}. Nothing from this page was sent. The user can take over here, or allow this site (shell: AI dot · MCP: --allow-site ${hostOf(url)}).`,
+        block: `⏸ AI auto-paused on ${hostOf(url)}: ${assessment.reasons.join(', ')}. Nothing from this page was sent. The user can take over here, or allow this site (host app: its AI control · MCP: --allow-site ${hostOf(url)}).`,
       };
     }
     return { block: null, assessment };

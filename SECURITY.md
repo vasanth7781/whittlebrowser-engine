@@ -19,7 +19,7 @@ We aim to acknowledge a report within 3 working days and to tell you our plan wi
 - Secrets, card numbers, tokens or vault values reaching model-visible output (`packages/engine/src/core/privacy.ts`).
 - Hidden or deceptive page text reaching the model unmarked (`packages/engine/src/core/injection.ts`, in-page agent).
 - Bypassing per-site AI modes, auto-pause, or approvals for irreversible actions (`risk.ts`, `policy.ts`).
-- The control protocol between the engine and a host app (`docs/CONTROL.md`, `ShellPolicy`): authentication, origin checks, token handling.
+- The control protocol between the engine and a host app (`docs/CONTROL.md`, `HostPolicy`): authentication, origin checks, token handling.
 - Reading private tabs from an agent, or reading files outside the allowed upload sandbox.
 
 ## Out of scope

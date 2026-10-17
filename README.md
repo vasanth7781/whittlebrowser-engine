@@ -5,7 +5,7 @@ ref-stable, diffed text**, secrets and hidden prompt injections are **kept away 
 sites and irreversible actions wait for a person. It runs as an MCP server and as a TypeScript library.
 
 - `packages/engine`: the protocol (in-page agent in a CDP isolated world, serializer, differ, privacy
-  filter, detectors), a Playwright/CDP driver and an MCP server (`whittlebrowser-mcp`).
+  filter, detectors), a Playwright/CDP driver and an MCP server (`whittlebrowser`).
 - The WhittleBrowser desktop browser (per-site AI, X-ray, ghost cursor, built-in chat, Demo Studio) is developed in a separate repository and is not released yet. The engine here works on its own with any MCP client.
 - `website`: the animated landing page and docs site (`pnpm --filter @whittlebrowser/website dev`).
 
@@ -39,13 +39,15 @@ pnpm bench       # benchmark (add -- --live --pw-mcp; run packages/engine/bench/
 ### Use it from Claude Code (or any MCP client)
 
 ```bash
-claude mcp add whittlebrowser -- node "$PWD/packages/engine/dist/mcp/cli.js"           # own Chromium window
-claude mcp add whittlebrowser -- node "$PWD/packages/engine/dist/mcp/cli.js" --shell   # drive the desktop browser, when it is running
+pnpm connect      # adds the server to Claude Code, and prints the JSON for Cursor, VS Code and other clients
 ```
+
+That runs `claude mcp add whittlebrowser -- node <this checkout>/packages/engine/dist/mcp/cli.js`. Any extra arguments go to the
+server, for example `pnpm connect --headless`. Setup for each client: [docs/use-with-ai-tools.md](docs/use-with-ai-tools.md).
 
 Flags: `--headless`, `--ephemeral`, `--profile DIR`, `--channel chrome`, `--budget N`,
 `--allow-site HOST` (override auto-pause), `--risk confirm|auto|deny`, `--robots off|warn|enforce`,
-`--default-off`, `--no-identify`, `--humanize`, `--bot-key FILE --bot-agent URL` (Web Bot Auth).
+`--default-off`, `--no-identify`, `--allow-file-urls`, `--humanize`, `--host` (use a host app's policy, see [docs/CONTROL.md](docs/CONTROL.md)), `--bot-key FILE --bot-agent URL` (Web Bot Auth).
 
 Secrets for `type secret:NAME`: env `WB_SECRET_NAME=…` or `~/.whittlebrowser/secrets.json` (chmod 600).
 
@@ -79,7 +81,7 @@ Full argument reference: [docs/PROTOCOL.md](docs/PROTOCOL.md).
 
 - Isolated-world agent; hidden and deceptive text dropped; ⚠ on instruction-like text.
 - Sensitive values masked in the page; one scrubbing choke point; reversible tokens; local vault.
-- Per-site AI modes (default Off in the shell), auto-pause on banking, consoles, and card/ID/key pages.
+- Per-site AI modes (`--default-off`, or Off per site when a host app owns the policy), auto-pause on banking, consoles, and card/ID/key pages.
 - Approval for irreversible actions, data-carrying cross-site jumps, and uploads outside a sandbox dir.
 - Honest identity: UA token, Web Bot Auth signatures, robots.txt, CAPTCHA handoff to the human.
   No fingerprint spoofing and no CAPTCHA solving.

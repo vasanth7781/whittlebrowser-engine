@@ -2,7 +2,7 @@
  * Sensitive-page detector (local, heuristic, default-deny). Decides whether AI may see/act on a page.
  *   ok      -> normal
  *   caution -> AI allowed, field values masked, typing only via secret refs/tokens is recommended
- *   pause   -> AI switched off for this page until the user overrides (shell: AI dot; MCP: --allow-site)
+ *   pause   -> AI switched off for this page until the user overrides (host app: its AI control; MCP: --allow-site)
  */
 import type { PageSignals } from './types.js';
 import { hostOf } from './url.js';

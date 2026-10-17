@@ -18,7 +18,7 @@ It runs in the same isolated world as the agent, so when an agent is attached th
 
 Before each click, hover, type or select, a small caption next to the pointer says what is about to happen (`click · Place order`). There is no box around the target: the pointer itself shows where it is going. The ghost cursor draws the **real** pointer: it follows the CDP mouse events the agent sends, so what you see is what the page receives.
 
-With humanized input on (`--humanize`, or `--shell` unless you pass `--fast`), the real pointer moves like a hand:
+With humanized input on (`--humanize`, or `--host` unless you pass `--fast`), the real pointer moves like a hand:
 
 - **Duration** from Fitts's law: `T = a + b·log2(D/W + 1)`, so longer moves to smaller targets take longer.
 - **Speed profile** is minimum-jerk: it starts slowly, is fastest mid-way, and settles at the end.
@@ -31,7 +31,7 @@ With humanized input on (`--humanize`, or `--shell` unless you pass `--fast`), t
 
 This is for people watching and for demo videos. It is **not** a bot-detection evasion feature: the engine still identifies itself (User-Agent token, Web Bot Auth) and hands CAPTCHAs to you.
 
-Flags: `--show-cursor` and `--humanize` enable them in standalone mode, `--shell` turns both on for a host app (`--fast` skips humanizing), `--no-cursor` turns the cursor off.
+Flags: `--show-cursor` and `--humanize` enable them in standalone mode, `--host` turns both on for a host app (`--fast` skips humanizing), `--no-cursor` turns the cursor off.
 
 ## Seeing what was sent
 

@@ -1,20 +1,20 @@
 #!/usr/bin/env node
 /**
- * whittlebrowser-mcp: stdio MCP server.
+ * whittlebrowser: stdio MCP server.
  *
- *   whittlebrowser-mcp                    launch Chromium with ~/.whittlebrowser/profile (headed)
- *   whittlebrowser-mcp --shell            drive the running WhittleBrowser shell (its AI dot + approvals apply)
- *   whittlebrowser-mcp --cdp http://127.0.0.1:9222
+ *   whittlebrowser                        launch Chromium with ~/.whittlebrowser/profile (headed)
+ *   whittlebrowser --host                 drive a running host app, such as the desktop browser (its per-site AI modes and approvals apply)
+ *   whittlebrowser --cdp http://127.0.0.1:9222
  *
  * Flags: --headless --ephemeral --profile DIR --channel chrome --budget N --allow-site HOST (repeatable)
  *        --risk confirm|auto|deny --robots off|warn|enforce --default-off --no-identify --allow-file-urls --humanize
- *        --bot-key FILE --bot-agent URL --show-cursor (default with --shell; --no-cursor) --xray --fast
+ *        --bot-key FILE --bot-agent URL --show-cursor (default with --host; --no-cursor) --xray --fast
  */
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { createServer } from './server.js';
 import { launch, type Launched } from '../driver/launch.js';
 import { Session } from '../driver/session.js';
-import { StaticPolicy, ShellPolicy, type Policy } from '../driver/policy.js';
+import { StaticPolicy, HostPolicy, type Policy } from '../driver/policy.js';
 
 function parse(argv: string[]) {
   const o: Record<string, string | boolean | string[]> = {};
@@ -42,11 +42,11 @@ async function getSession(): Promise<Session> {
   session = (async () => {
     let policy: Policy;
     let cdpUrl = args.cdp as string | undefined;
-    if (args.shell) {
-      const shell = ShellPolicy.fromDisk();
-      if (!shell) throw new Error('WhittleBrowser shell is not running (no ~/.whittlebrowser/shell.json)');
-      policy = shell.policy;
-      cdpUrl = shell.cdp;
+    if (args.host) {
+      const host = HostPolicy.fromDisk();
+      if (!host) throw new Error('No host app is running (no ~/.whittlebrowser/host.json)');
+      policy = host.policy;
+      cdpUrl = host.cdp;
     } else {
       policy = new StaticPolicy({
         defaultMode: args['default-off'] ? 'off' : 'allowed',
@@ -66,9 +66,9 @@ async function getSession(): Promise<Session> {
       robots: (args.robots as 'off' | 'warn' | 'enforce') || 'warn',
       identify: !args['no-identify'],
       allowFileUrls: !!args['allow-file-urls'],
-      // Watching in the shell: human-like pointer and typing by default (--fast to skip).
-      humanize: !!args.humanize || (!!args.shell && !args.fast),
-      showCursor: !!args['show-cursor'] || (!!args.shell && !args['no-cursor']),
+      // Watching in a host app: human-like pointer and typing by default (--fast to skip).
+      humanize: !!args.humanize || (!!args.host && !args.fast),
+      showCursor: !!args['show-cursor'] || (!!args.host && !args['no-cursor']),
       xray: !!args.xray,
     });
   })();

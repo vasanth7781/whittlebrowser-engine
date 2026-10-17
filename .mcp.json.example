@@ -3,10 +3,6 @@
     "whittlebrowser": {
       "command": "node",
       "args": ["packages/engine/dist/mcp/cli.js"]
-    },
-    "whittlebrowser-shell": {
-      "command": "node",
-      "args": ["packages/engine/dist/mcp/cli.js", "--shell"]
     }
   }
 }

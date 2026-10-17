@@ -6,17 +6,17 @@ the engine talks to that host over a small local HTTP protocol, so the person us
 control: per-site AI modes, approvals, human handoff and a log of what was sent all come from this.
 
 You can implement this protocol in your own app. The reference implementation is the desktop
-browser's control server (in the browser repository) and `ShellPolicy` in `packages/engine/src/driver/policy.ts` (client).
+browser's control server (in the browser repository) and `HostPolicy` in `packages/engine/src/driver/policy.ts` (client).
 
 ## Discovery
 
-The host writes `shell.json` (mode `0600`) into `WB_HOME` (default `~/.whittlebrowser`):
+The host writes `host.json` (mode `0600`) into `WB_HOME` (default `~/.whittlebrowser`):
 
 ```json
 { "cdpPort": 9222, "controlPort": 51234, "token": "<random hex>", "pid": 4242 }
 ```
 
-The engine connects with `whittlebrowser-mcp --shell`: it reads this file, attaches to the host's
+The engine connects with `whittlebrowser --host`: it reads this file, attaches to the host's
 Chromium over CDP (`http://127.0.0.1:<cdpPort>`), and uses the control server for every decision below.
 
 ## Transport and security

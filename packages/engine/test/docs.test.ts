@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -27,5 +28,23 @@ describe('docs', () => {
     const total = (k: 'pw' | 'bu' | 'sh' | 'ours') => j.pages.reduce((a: number, p: Record<string, number | null>) => a + (p[k] ?? 0), 0);
     for (const k of ['pw', 'bu', 'sh', 'ours'] as const) expect(text, `page total for ${k}`).toContain(f(total(k)));
     expect(text).toContain(f(j.fixed.ours));
+  });
+
+  it('use the current command and protocol names', () => {
+    const repo = join(docs, '..');
+    const pkg = JSON.parse(readFileSync(join(repo, 'packages/engine/package.json'), 'utf8'));
+    expect(Object.keys(pkg.bin)).toEqual(['whittlebrowser']);
+    const stale = /whittlebrowser-mcp|--shell\b|ShellPolicy|shell\.json/;
+    const scan = [...files.map((f) => join(docs, f)), join(repo, 'README.md'), join(repo, 'SECURITY.md'), join(repo, 'packages/engine/README.md'), join(repo, '.mcp.json.example')];
+    for (const f of scan) expect(readFileSync(f, 'utf8'), f).not.toMatch(stale);
+  });
+
+  it('pnpm connect --print gives a config that points at the built server', () => {
+    const repo = join(docs, '..');
+    const out = execFileSync('node', [join(repo, 'scripts/connect.mjs'), '--print', '--headless'], { encoding: 'utf8' });
+    const json = JSON.parse(out.slice(out.indexOf('{')));
+    const [cli, flag] = json.mcpServers.whittlebrowser.args;
+    expect(existsSync(cli)).toBe(true);
+    expect(flag).toBe('--headless');
   });
 });

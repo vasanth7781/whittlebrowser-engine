@@ -8,7 +8,8 @@
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
     "bench": "pnpm --filter @whittlebrowser/engine bench",
-    "mcp": "pnpm --filter @whittlebrowser/engine mcp"
+    "mcp": "pnpm --filter @whittlebrowser/engine mcp",
+    "connect": "node scripts/connect.mjs"
   },
   "packageManager": "pnpm@10.13.1",
   "engines": {
