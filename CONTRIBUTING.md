@@ -5,6 +5,7 @@ Thanks for helping. This repository is MIT licensed (see [LICENSE](LICENSE)).
 ## Set up
 
 ```bash
+git clone https://github.com/vasanth7781/whittlebrowser-engine.git && cd whittlebrowser-engine
 pnpm install
 pnpm --filter @whittlebrowser/engine build
 npx playwright-core install chromium   # once

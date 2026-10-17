@@ -1,6 +1,6 @@
 /**
  * MCP server. Nine tools with terse schemas: tool definitions are paid for on every request, so they
- * are kept small (the whole tool list is ~700 tokens).
+ * are kept small (the whole tool list is about 1,000 tokens).
  */
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';

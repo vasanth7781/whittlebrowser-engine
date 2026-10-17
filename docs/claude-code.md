@@ -8,32 +8,16 @@ you → Claude Code (Claude thinks) → whittlebrowser MCP server → WhittleBro
 
 ## Register the server
 
-Run once, from the repo root:
+Run once, from the repo root (build first: see [Getting started](getting-started.html)):
 
 ```bash
-claude mcp add whittlebrowser -- node "$PWD/packages/engine/dist/mcp/cli.js" --shell
+claude mcp add whittlebrowser -- node "$PWD/packages/engine/dist/mcp/cli.js"
 ```
 
-- `--shell` attaches to the running WhittleBrowser window, so your AI dot, auto-pause and approvals apply, and the ghost cursor is on.
-- Leave out `--shell` to let the server open its own Chromium window instead (sites allowed by default; auto-pause and risky-action checks still apply).
+- This opens its own Chromium window (sites allowed by default; auto-pause and risky-action checks still apply). Add `--headless` for no window.
+- Add `--shell` to attach to a running WhittleBrowser desktop window instead, so your AI dot, auto-pause and approvals apply and the ghost cursor is on. The desktop browser is a separate repository and is not released yet.
 - Add `--scope user` after `add` to make it available in every folder.
 - `claude mcp list` / `claude mcp remove whittlebrowser` to inspect or remove.
-
-## Try it
-
-1. Open the desktop browser (separate repository, not released yet) and set the AI dot to **Allowed**, or skip this step and run the server without `--shell` so it opens its own Chromium window.
-2. Start `claude` in the repo folder; `/mcp` should list `whittlebrowser`.
-3. Ask, for example:
-
-> Use whittlebrowser to read the page in my browser and summarize it.
-
-> Search Substack for "AI agents", open the first 3 posts one by one, and give me title, author and a 3-line summary for each.
-
-> Use whittlebrowser research on these results and give me a comparison table.
-
-> Click Subscribe on this blog. *(an approval card appears in the Agent panel)*
-
-Open the Agent panel (⌘⇧A) to watch each step, the exact text Claude was sent, and the token count.
 
 ## Tools
 
@@ -42,7 +26,7 @@ Open the Agent panel (⌘⇧A) to watch each step, the exact text Claude was sen
 | `observe` | Compact view of the page (or one subtree) within a token budget |
 | `act` | One or more steps (click, type, select, check, hover, press, scroll, upload); returns outcome + diff |
 | `navigate` | URL, search words, back, forward, reload |
-| `find` | Search the whole page, including off-screen, ranked |
+| `find` | Search the whole page, including off-screen, ranked. `role:button pay` filters by role; `css:SELECTOR` counts visible matches and lists their class and attributes |
 | `extract` | `table`, `list` (repeated cards as rows), `text` (main content as markdown), paged |
 | `research` | Open several pages in parallel and return a compact digest of each |
 | `tabs` | list, open, switch, close |

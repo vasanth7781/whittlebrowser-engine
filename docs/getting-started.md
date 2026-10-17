@@ -19,11 +19,11 @@ separate repository and has no downloadable app yet because it needs more testin
 ## Install from source
 
 ```bash
-git clone <this repo> whittlebrowser
-cd whittlebrowser
+git clone https://github.com/vasanth7781/whittlebrowser-engine.git
+cd whittlebrowser-engine
 pnpm install
 pnpm --filter @whittlebrowser/engine build
-npx playwright-core install chromium    # only needed for the standalone/headless mode
+npx playwright-core install chromium    # downloads the browser it drives (once)
 ```
 
 ## Open the browser

@@ -391,23 +391,23 @@
   <div class="sec-head reveal"><span class="kicker">Quick start</span><h2>Two minutes to your first agent run.</h2></div>
   <div class="qs reveal">
     <div class="tabs" role="tablist">
-      <button class="on" data-qs="0">Browser + Claude Code</button><button data-qs="1">Standalone MCP</button><button data-qs="2">Benchmark</button>
+      <button class="on" data-qs="0">Claude Code</button><button data-qs="1">Headless / CI</button><button data-qs="2">Benchmark</button>
     </div>
-    <div class="code" data-qs-pane="0"><button class="copy">Copy</button><pre><span class="c"># install and open the browser (experimental, runs from source)</span>
+    <div class="code" data-qs-pane="0"><button class="copy">Copy</button><pre><span class="c"># install (from source, once)</span>
+git clone https://github.com/vasanth7781/whittlebrowser-engine.git && cd whittlebrowser-engine
 pnpm install && pnpm --filter @whittlebrowser/engine build
-pnpm shell
+npx playwright-core install chromium
 
 <span class="c"># connect Claude Code (once, from the repo root)</span>
-claude mcp add whittlebrowser -- node "$PWD/packages/engine/dist/mcp/cli.js" --shell
+claude mcp add whittlebrowser -- node "$PWD/packages/engine/dist/mcp/cli.js" --show-cursor
 
-<span class="c"># set the AI dot to Allowed on a site, then ask Claude:</span>
+<span class="c"># then ask Claude:</span>
 <span class="s">"Use whittlebrowser to research the top 5 results and compare them."</span></pre></div>
-    <div class="code" data-qs-pane="1" hidden><button class="copy">Copy</button><pre><span class="c"># its own Chromium window, no shell needed</span>
-npx playwright-core install chromium
-claude mcp add whittlebrowser -- node "$PWD/packages/engine/dist/mcp/cli.js" --show-cursor --xray</pre></div>
+    <div class="code" data-qs-pane="1" hidden><button class="copy">Copy</button><pre><span class="c"># no window, throwaway profile: for CI and servers</span>
+claude mcp add whittlebrowser -- node "$PWD/packages/engine/dist/mcp/cli.js" --headless --ephemeral</pre></div>
     <div class="code" data-qs-pane="2" hidden><button class="copy">Copy</button><pre>pnpm test                        <span class="c"># unit, browser, MCP, canary leak tests</span>
 pnpm bench -- --live --pw-mcp    <span class="c"># tokens, leaks, injections vs Playwright MCP</span>
-pnpm smoke                       <span class="c"># end-to-end through the real browser</span></pre></div>
+pnpm bench:agent --smoke         <span class="c"># real-agent run through Claude Code (needs the claude CLI)</span></pre></div>
   </div>
 </section>
 

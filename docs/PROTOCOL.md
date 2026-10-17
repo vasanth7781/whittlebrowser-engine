@@ -58,6 +58,7 @@ When the page navigates, or a diff would cost more than 75% of a full view, the 
 | navigate | url (or search words, back, forward, reload), confirm? | |
 | find | q, limit? | `role:button pay` filters by role; searches off-screen too. `css:.star-rating.Five` counts the visible matches and lists their class and common attributes (read-only; no script runs) |
 | extract | kind table\|list\|text, ref?, offset?, links? | paged; `list` turns repeated cards into rows |
+| research | urls?, limit?, budget?, keep? | opens pages in parallel and returns a compact digest of each; no `urls` uses the top result links on the current page |
 | tabs | op list\|open\|switch\|close, url?, index? | |
 | screenshot | ref? | JPEG, sensitive fields blurred; last resort |
 | wait | text? gone? ms? user? | `user` hands control to the human (CAPTCHA, 2FA) |

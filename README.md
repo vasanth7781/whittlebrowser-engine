@@ -27,6 +27,7 @@ Same 11 pages (5 test pages + 6 live sites), same Chromium, each tool's own code
 ## Quick start
 
 ```bash
+git clone https://github.com/vasanth7781/whittlebrowser-engine.git && cd whittlebrowser-engine
 pnpm install
 pnpm --filter @whittlebrowser/engine build
 npx playwright-core install chromium   # once
@@ -53,6 +54,24 @@ Secrets for `type secret:NAME`: env `WB_SECRET_NAME=…` or `~/.whittlebrowser/s
 A hosted version runs the same engine in isolated machines behind an API, with a live view so a person can finish
 logins, one-time codes and challenges. It is prepaid credits only. Its code is proprietary and lives in a separate
 repository; everything in this repository is MIT.
+
+## Tools
+
+Nine MCP tools with short schemas (the whole list is about 1,000 tokens):
+
+| Tool | What it does |
+|---|---|
+| `observe` | Compact view of the page (or one subtree) within a token budget |
+| `act` | One or more steps (click, type, select, check, hover, press, scroll, upload); returns outcome + diff |
+| `navigate` | URL, search words, back, forward, reload |
+| `find` | Search the whole page, including off-screen, ranked. `role:button pay` filters by role; `css:SELECTOR` counts visible matches and lists their class and attributes |
+| `extract` | `table`, `list` (repeated cards as rows), `text` (main content as markdown), paged |
+| `research` | Open several pages in parallel and return a compact digest of each |
+| `tabs` | list, open, switch, close |
+| `screenshot` | JPEG with sensitive fields blurred (last resort) |
+| `wait` | For text, for a delay, or hand control to you (CAPTCHA, 2FA) |
+
+Full argument reference: [docs/PROTOCOL.md](docs/PROTOCOL.md).
 
 ## How it stays cheap
 

@@ -9,7 +9,7 @@ to use it cheaply.
 The npm package is not published yet. Until it is, run it from source:
 
 ```bash
-git clone <this repo> whittlebrowser && cd whittlebrowser
+git clone https://github.com/vasanth7781/whittlebrowser-engine.git && cd whittlebrowser-engine
 pnpm install
 pnpm --filter @whittlebrowser/engine build
 npx playwright-core install chromium     # downloads the browser it drives (once)
@@ -18,7 +18,7 @@ npx playwright-core install chromium     # downloads the browser it drives (once
 Your tools will run this command. Use the **absolute path** to the file:
 
 ```
-node /absolute/path/to/whittlebrowser/packages/engine/dist/mcp/cli.js
+node /absolute/path/to/whittlebrowser-engine/packages/engine/dist/mcp/cli.js
 ```
 
 > **Do not run `npx whittlebrowser-mcp`.** That name on npm belongs to a different project, not this one. We will publish under our own scope and update this page.
