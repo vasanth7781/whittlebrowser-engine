@@ -1,8 +1,8 @@
 # WhittleBrowser
 
-A lightweight, Chromium-based browser and agent protocol. AI is **off by default per site**, pages are
-shown to models as **compact, ref-stable, diffed text**, and secrets and hidden prompt injections
-**never reach the LLM**.
+An open-source engine that lets AI agents use a Chromium browser. Pages are shown to models as **compact,
+ref-stable, diffed text**, secrets and hidden prompt injections are **kept away from the LLM**, and sensitive
+sites and irreversible actions wait for a person. It runs as an MCP server and as a TypeScript library.
 
 - `packages/engine`: the protocol (in-page agent in a CDP isolated world, serializer, differ, privacy
   filter, detectors), a Playwright/CDP driver and an MCP server (`whittlebrowser-mcp`).

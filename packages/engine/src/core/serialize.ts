@@ -171,9 +171,13 @@ function kidsBlock(kids: RawNode[], d: number, out: Line[], p: Profile, parentRe
   }
 }
 
-function controlText(n: RawNode, p: Profile): string {
+function controlText(n: RawNode, p: Profile, st?: { inj: number }): string {
   let t = `[${n.r}] ${n.role}`;
-  if (n.name) t += ' ' + q(cut(n.name, p.textMax));
+  if (n.name) {
+    // A link or button label can carry instructions just like body text.
+    if (st && looksLikeInjection(n.name)) { st.inj++; t = '⚠ ' + t; }
+    t += ' ' + q(cut(n.name, p.textMax));
+  }
   if (n.val !== undefined && n.val !== '') t += ` = ${q(cut(n.val, p.textMax))}`;
   if (n.opts && n.nopt) {
     const shown = n.opts.slice(0, 4);
@@ -187,7 +191,7 @@ function controlText(n: RawNode, p: Profile): string {
 /** Inline rendering for runs joined onto one line. */
 function inline(n: RawNode, p: Profile, st: { inj: number }): string {
   if (n.role === 'text') return flag(cut(n.name || '', p.textMax), st);
-  if (n.r && INTERACTIVE.has(n.role)) return controlText(n, p);
+  if (n.r && INTERACTIVE.has(n.role)) return controlText(n, p, st);
   if (n.role === 'heading') return n.name ? cut(n.name, p.textMax) : joinInline((n.kids || []).map((k) => inline(k, p, st)), ' ');
   if (n.role === 'img') return p.imgs ? `img ${q(n.name || '')}` : '';
   if (n.kids) return joinInline(dedupe(n.kids).map((k) => inline(k, p, st)), n.role === 'row' ? ' | ' : ' ');
@@ -268,7 +272,7 @@ function node(n: RawNode, d: number, out: Line[], p: Profile, st: { inj: number 
     if (n.kids && n.kids.length) {
       out.push({ d, t: `[${n.r}] ${n.role}${n.st ? ' ' + n.st : ''}`, r: n.r, off });
       kidsBlock(n.kids, d + 1, out, p, n.r, st);
-    } else out.push({ d, t: controlText(n, p), r: n.r, off });
+    } else out.push({ d, t: controlText(n, p, st), r: n.r, off });
     return;
   }
   if (n.role === 'iframe' && n.st === 'cross-origin') {

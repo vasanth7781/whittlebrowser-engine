@@ -35,7 +35,7 @@ claude mcp add whittlebrowser -- node "$PWD/packages/engine/dist/mcp/cli.js"
 
 ## Flags
 
-`--headless`, `--ephemeral`, `--profile DIR`, `--channel chrome`, `--budget N`, `--allow-site HOST`, `--risk confirm|auto|deny`, `--robots off|warn|enforce`, `--default-off`, `--no-identify`, `--humanize`, `--show-cursor`, `--no-cursor`, `--xray`, `--bot-key FILE --bot-agent URL`.
+`--headless`, `--ephemeral`, `--profile DIR`, `--channel chrome`, `--budget N`, `--allow-site HOST`, `--risk confirm|auto|deny`, `--robots off|warn|enforce`, `--default-off`, `--no-identify`, `--allow-file-urls`, `--humanize`, `--show-cursor`, `--no-cursor`, `--xray`, `--bot-key FILE --bot-agent URL`.
 
 ## Secrets
 

@@ -942,16 +942,18 @@ export function installAgent(): void {
     const sel = el as HTMLSelectElement;
     const opts = Array.from(sel.options);
     const norm = (s: string) => collapse(s).toLowerCase();
-    const picked: string[] = [];
-    for (const o of opts) o.selected = false;
+    // Resolve every wanted option first: a typo must not clear the current choice.
+    const chosen: HTMLOptionElement[] = [];
     for (const w of wanted) {
       const n = norm(w);
       const o = opts.find((x) => norm(x.text) === n || x.value.toLowerCase() === n) || opts.find((x) => norm(x.text).includes(n));
       if (!o) return { ok: false, error: `no option "${w}"`, options: opts.slice(0, 30).map((x) => collapse(x.text)) };
-      o.selected = true;
-      picked.push(collapse(o.text));
+      chosen.push(o);
       if (!sel.multiple) break;
     }
+    for (const o of opts) o.selected = false;
+    for (const o of chosen) o.selected = true;
+    const picked = chosen.map((o) => collapse(o.text));
     sel.dispatchEvent(new Event('input', { bubbles: true }));
     sel.dispatchEvent(new Event('change', { bubbles: true }));
     return { ok: true, picked };
@@ -987,15 +989,19 @@ export function installAgent(): void {
     });
   }
 
-  function describe(ref: number): Describe | null {
+  /** `ref` null describes the focused element (for a key press with no target). */
+  function describe(ref: number | null): Describe | null {
     CS = new Map(); VC = new Map();
-    const el = resolve(ref);
-    if (!el) return null;
+    const el = ref === null ? deepActive() : resolve(ref);
+    if (!el || (ref === null && (el === document.body || el === document.documentElement))) return null;
     const role = roleOf(el, style(el));
+    const form = (el as HTMLInputElement).form;
+    const sb = form?.querySelector('button:not([type]),button[type=submit],input[type=submit],input[type=image]');
     return {
       role, name: accName(el, role), tag: el.localName, sens: sensitiveKind(el) || undefined,
       type: (el as HTMLInputElement).type || undefined, href: el.getAttribute('href') || undefined,
-      form: !!(el as HTMLInputElement).form,
+      form: !!form,
+      submit: sb ? accName(sb, roleOf(sb, style(sb))) : undefined,
       checked: (el as HTMLInputElement).checked === true || el.getAttribute('aria-checked') === 'true',
     };
   }
@@ -1107,6 +1113,20 @@ export function installAgent(): void {
   }
 
   // ---------- read: main content as compact markdown ----------
+  /** Text of a <pre>, leaving out hidden and deceptive descendants like every other path. */
+  function preText(el: Element): string {
+    let out = '';
+    const walk = (n: Node) => {
+      if (n.nodeType === 3) { out += (n as Text).data; return; }
+      if (n.nodeType !== 1) return;
+      const e = n as Element;
+      if (SKIP_TAGS.has(e.localName) || verdict(e) !== 0) return;
+      for (const c of childNodesOf(e)) walk(c);
+    };
+    for (const c of childNodesOf(el)) walk(c);
+    return out;
+  }
+
   function read(ref: number | null, links: boolean): { md: string; ref?: number } | { error: string } {
     CS = new Map(); VC = new Map();
     let root: Element | null = ref ? resolve(ref) : null;
@@ -1121,7 +1141,9 @@ export function installAgent(): void {
       if (n.nodeType !== 1) return;
       const el = n as Element;
       const tag = el.localName;
-      if (SKIP_TAGS.has(tag) || tag === 'svg' || tag === 'button' || tag === 'form' || tag === 'select' || tag === 'input' || tag === 'textarea') return;
+      if (SKIP_TAGS.has(tag) || tag === 'svg' || tag === 'button' || tag === 'select' || tag === 'input' || tag === 'textarea') return;
+      // A form is skipped (its labels are noise) unless it wraps the page content, as ASP.NET pages do.
+      if (tag === 'form' && !el.querySelector('main,article,h1,h2,[role=main]')) return;
       const v = verdict(el);
       if (v !== 0) return;
       if (root === document.body && BOILER.test(tag) && el !== root) return;
@@ -1139,7 +1161,7 @@ export function installAgent(): void {
         CS = new Map(); VC = new Map();
         return;
       }
-      if (tag === 'pre') { flush(); lines.push('```\n' + clip((el.textContent || '').trim(), 1500) + '\n```'); return; }
+      if (tag === 'pre') { flush(); lines.push('```\n' + clip(preText(el).trim(), 1500) + '\n```'); return; }
       if (tag === 'img') { const alt = (el as HTMLImageElement).alt; if (alt && links) cur += ` [img: ${alt}] `; return; }
       if (tag === 'a' && links && el.getAttribute('href')) { cur += ` [${textOf(el, 120)}](${el.getAttribute('href')}) `; return; }
       if (tag === 'br') { flush(); return; }

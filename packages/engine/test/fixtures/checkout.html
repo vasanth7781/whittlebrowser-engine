@@ -1,0 +1,11 @@
+<!doctype html><html><head><title>Checkout</title></head><body><main>
+<h1>Checkout</h1>
+<form id="pay" onsubmit="event.preventDefault(); document.title = 'ORDERED'">
+  <label>Card holder <input id="holder" name="holder"></label>
+  <button type="submit">Place order</button>
+</form>
+<form id="find" onsubmit="event.preventDefault(); document.title = 'SEARCHED'">
+  <input aria-label="Query" name="q">
+  <button>Search</button>
+</form>
+</main></body></html>

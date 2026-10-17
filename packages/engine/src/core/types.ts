@@ -101,6 +101,8 @@ export interface Describe {
   type?: string;
   href?: string;
   form?: boolean;
+  /** Name of the form's submit button, so pressing Enter in a field can be judged by what it would submit. */
+  submit?: string;
   checked?: boolean;
 }
 

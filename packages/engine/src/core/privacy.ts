@@ -44,6 +44,22 @@ function ibanOk(s: string): boolean {
   return m === 1;
 }
 
+/**
+ * The card pattern also swallows digits that sit next to a card ("4242 4242 4242 4242 12/28" is 18 digits), which then
+ * fails the checksum. Look for a run of whole space- or dash-separated digit groups inside the match that is a valid card.
+ * Only whole groups are tried, so a plain long number is never cut in the middle.
+ */
+function cardSpan(m: string): [number, number] | null {
+  const groups = [...m.matchAll(/\d+/g)].map((g) => [g.index!, g.index! + g[0].length] as const);
+  for (let from = 0; from < groups.length; from++) {
+    for (let to = groups.length - 1; to >= from; to--) {
+      const a = groups[from][0], z = groups[to][1];
+      if (luhn(m.slice(a, z))) return [a, z];
+    }
+  }
+  return null;
+}
+
 const RULES: Rule[] = [
   { kind: 'privkey', re: /-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?(-----END [A-Z ]*PRIVATE KEY-----|$)/g },
   { kind: 'jwt', re: /\beyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}/g },
@@ -106,6 +122,12 @@ export class Privacy {
           if (g1.startsWith('‹')) return m;
           this.bump(rule.kind);
           return m.replace(g1, this.tokenFor(rule.kind, g1));
+        }
+        if (rule.kind === 'card') {
+          const span = cardSpan(m);
+          if (!span) return m;
+          this.bump(rule.kind);
+          return m.slice(0, span[0]) + this.tokenFor(rule.kind, m.slice(span[0], span[1])) + m.slice(span[1]);
         }
         if (rule.check && !rule.check(m)) return m;
         this.bump(rule.kind);

@@ -11,7 +11,8 @@ WhittleBrowser assumes web pages are hostile and that anything sent to an LLM ma
 | Secrets in form fields | Masked inside the page (`= "•••" ⚿password`); never cross into Node. |
 | Typing your passwords | Vault refs (`secret:NAME`) resolved locally; echoed values scrubbed. |
 | AI on sensitive sites | Per-site Off/Ask/Allowed when a host app owns the policy (`--default-off` makes standalone mode start with AI off). Auto-pause on banks, cloud consoles, password managers, card/ID/API-key fields and key pages. |
-| Irreversible actions | Pay, order, delete, send, publish, transfer, grant… need approval from the host app, or `confirm:true` from a headless agent. `confirm()` dialogs are dismissed unless approved. |
+| Irreversible actions | Pay, order, delete, send, publish, transfer, grant… need approval from the host app, or `confirm:true` from a headless agent. This covers clicks and also Enter: pressing Enter in a form field is judged by the name of the form's submit button, and Enter or Space on a focused button by its own name. `confirm()` dialogs are dismissed unless approved. |
+| Local files | The agent can open only `http(s)` pages: `file:`, `data:`, `view-source:`, `chrome:` and similar URLs are refused by `navigate`, `research` and `tabs open`. `--allow-file-urls` turns file and data URLs on for trusted local use. |
 | Data exfiltration | Jumps to another site with a long query string need approval; URL query values are elided in views; uploads outside a sandbox folder need approval. |
 | Screenshots | JPEG with sensitive fields blurred; text views are preferred. |
 

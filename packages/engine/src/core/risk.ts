@@ -12,11 +12,35 @@ export interface RiskVerdict {
   why?: string;
 }
 
-export function classifyAction(kind: string, target: { role?: string; name?: string; form?: boolean } | null, key?: string): RiskVerdict {
-  const name = (target?.name || '').trim();
-  if (kind === 'click' || (kind === 'press' && /^enter$/i.test(key || '') && target?.form)) {
-    const m = name.match(HIGH);
-    if (m) return { risk: 'high', why: `"${name.slice(0, 60)}" looks irreversible (${m[0].toLowerCase()})` };
+/** Roles where Enter or Space does the same as a click. */
+const ACTIVATES = new Set(['button', 'link', 'clickable', 'menuitem', 'tab', 'switch', 'checkbox', 'radio']);
+
+/**
+ * A key press can do what a click does: Enter or Space on a focused button, or Enter in a field, which submits
+ * its form. So Enter is judged by the control's own name and, inside a form, by the name of the submit button.
+ */
+export function classifyAction(
+  kind: string,
+  target: { role?: string; name?: string; form?: boolean; submit?: string } | null,
+  key?: string,
+): RiskVerdict {
+  const hit = (label: string, what: string): RiskVerdict | null => {
+    const m = label.trim().match(HIGH);
+    return m ? { risk: 'high', why: `${what} "${label.trim().slice(0, 60)}" looks irreversible (${m[0].toLowerCase()})` } : null;
+  };
+  const name = target?.name || '';
+  if (kind === 'click') return hit(name, '') ?? { risk: 'low' };
+  if (kind === 'press') {
+    const enter = /^enter$/i.test(key || '');
+    const space = /^(space| )$/i.test(key || '');
+    if ((enter || space) && target?.role && ACTIVATES.has(target.role)) {
+      const v = hit(name, '');
+      if (v) return v;
+    }
+    if (enter && target?.form) {
+      const v = hit(target.submit || '', 'submits') ?? hit(name, '');
+      if (v) return v;
+    }
   }
   return { risk: 'low' };
 }

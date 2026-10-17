@@ -7,7 +7,7 @@
  *   whittlebrowser-mcp --cdp http://127.0.0.1:9222
  *
  * Flags: --headless --ephemeral --profile DIR --channel chrome --budget N --allow-site HOST (repeatable)
- *        --risk confirm|auto|deny --robots off|warn|enforce --default-off --no-identify --humanize
+ *        --risk confirm|auto|deny --robots off|warn|enforce --default-off --no-identify --allow-file-urls --humanize
  *        --bot-key FILE --bot-agent URL --show-cursor (default with --shell; --no-cursor) --xray --fast
  */
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
@@ -65,6 +65,7 @@ async function getSession(): Promise<Session> {
       budget: args.budget ? +args.budget : undefined,
       robots: (args.robots as 'off' | 'warn' | 'enforce') || 'warn',
       identify: !args['no-identify'],
+      allowFileUrls: !!args['allow-file-urls'],
       // Watching in the shell: human-like pointer and typing by default (--fast to skip).
       humanize: !!args.humanize || (!!args.shell && !args.fast),
       showCursor: !!args['show-cursor'] || (!!args.shell && !args['no-cursor']),
