@@ -24,6 +24,24 @@ export interface Launched {
   close(): Promise<void>;
 }
 
+/**
+ * Runs `start` with the bundled Chromium. If it was never downloaded, tries the Google Chrome installed on this
+ * machine, and if that is missing too, says exactly what to run instead of showing Playwright's path error.
+ */
+/** @internal exported for tests */
+export async function withBrowser<T>(channel: string | undefined, start: (channel: string | undefined) => Promise<T>): Promise<T> {
+  try {
+    return await start(channel);
+  } catch (e) {
+    if (channel || !/Executable doesn't exist/i.test((e as Error).message)) throw e;
+    try {
+      return await start('chrome');
+    } catch {
+      throw new Error('No browser to drive. Run `npx playwright-core install chromium` once (or install Google Chrome), then try again.');
+    }
+  }
+}
+
 export async function launch(o: LaunchOptions = {}): Promise<Launched> {
   let context: BrowserContext;
   let browser: Browser | null = null;
@@ -34,11 +52,11 @@ export async function launch(o: LaunchOptions = {}): Promise<Launched> {
     const viewport = o.viewport ?? { width: 1280, height: 860 };
     const args = ['--no-first-run', '--no-default-browser-check'];
     if (o.profileDir === null) {
-      browser = await chromium.launch({ headless: o.headless ?? false, channel: o.channel, args });
+      browser = await withBrowser(o.channel, (channel) => chromium.launch({ headless: o.headless ?? false, channel, args }));
       context = await browser.newContext({ viewport, acceptDownloads: true });
     } else {
       const dir = o.profileDir ?? join(homedir(), '.whittlebrowser', 'profile');
-      context = await chromium.launchPersistentContext(dir, { headless: o.headless ?? false, channel: o.channel, viewport, args, acceptDownloads: true });
+      context = await withBrowser(o.channel, (channel) => chromium.launchPersistentContext(dir, { headless: o.headless ?? false, channel, viewport, args, acceptDownloads: true }));
     }
   }
   if (o.botAuth) {

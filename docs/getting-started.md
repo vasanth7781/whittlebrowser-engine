@@ -17,16 +17,17 @@ git clone https://github.com/vasanth7781/whittlebrowser-engine.git
 cd whittlebrowser-engine
 pnpm install
 pnpm --filter @whittlebrowser/engine build
-npx playwright-core install chromium    # downloads the browser it drives (once)
+npx playwright-core install chromium    # downloads the browser it drives (once; skip it if Google Chrome is installed)
 ```
 
 ## Connect an agent
 
 ```bash
-claude mcp add whittlebrowser -- node "$PWD/packages/engine/dist/mcp/cli.js"
+pnpm connect          # Claude Code
+pnpm connect codex    # Codex
 ```
 
-This opens its own Chromium window. Add `--headless` for no window or `--ephemeral` for a throwaway profile. Setup for Cursor, Codex, VS Code and others is in [Use it with Claude, Cursor, Codex and other AI tools](use-with-ai-tools.html); the full flag list is in [Use with Claude Code](claude-code.html).
+Each runs `claude mcp add` or `codex mcp add` with the right path, and prints the config JSON for Cursor, VS Code and other clients. This opens its own Chromium window. Add `--headless` for no window or `--ephemeral` for a throwaway profile. Setup for Cursor, Codex, VS Code and others is in [Use it with Claude, Cursor, Codex and other AI tools](use-with-ai-tools.html); the full flag list is in [Use with Claude Code](claude-code.html).
 
 ## Try it
 

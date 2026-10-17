@@ -15,7 +15,7 @@ pnpm --filter @whittlebrowser/engine build
 npx playwright-core install chromium     # downloads the browser it drives (once)
 ```
 
-Every MCP client starts the server with a command. From the repository root, `pnpm connect` registers it with Claude Code and prints the JSON for the other clients. To do it by hand, use the **absolute path** to the file:
+Every MCP client starts the server with a command. From the repository root, `pnpm connect` registers it with Claude Code, `pnpm connect codex` with Codex, and both print the JSON for the other clients. To do it by hand, use the **absolute path** to the file:
 
 ```
 node /absolute/path/to/whittlebrowser-engine/packages/engine/dist/mcp/cli.js
@@ -31,8 +31,9 @@ Replace `/absolute/path/to/whittlebrowser` below with where you cloned it. Tools
 ### Claude Code
 
 ```bash
+pnpm connect                # from the repository root; or by hand:
 claude mcp add whittlebrowser -- node /absolute/path/to/whittlebrowser/packages/engine/dist/mcp/cli.js
-claude mcp list          # whittlebrowser should show as connected
+claude mcp list             # whittlebrowser should show as connected
 ```
 
 Add `--scope user` to make it available in every project, or `--scope project` to share it with your team through `.mcp.json`.
@@ -100,7 +101,13 @@ Edit `~/.codeium/windsurf/mcp_config.json`:
 
 ### Codex CLI
 
-Add to `~/.codex/config.toml`:
+```bash
+pnpm connect codex          # from the repository root; or by hand:
+codex mcp add whittlebrowser -- node /absolute/path/to/whittlebrowser/packages/engine/dist/mcp/cli.js
+codex mcp list              # whittlebrowser should show as enabled
+```
+
+Both write this to `~/.codex/config.toml`, which you can also edit directly:
 
 ```toml
 [mcp_servers.whittlebrowser]
@@ -197,7 +204,7 @@ await browser.close();
 | Symptom | Fix |
 |---|---|
 | The server does not appear | Use the absolute path, Node 22 or newer, and run `pnpm --filter @whittlebrowser/engine build` again after pulling changes |
-| "Executable doesn't exist" | Run `npx playwright-core install chromium` |
+| "No browser to drive" | Run `npx playwright-core install chromium` once, or install Google Chrome (the server uses Chrome when it finds no downloaded Chromium) |
 | A keychain prompt for "Chrome for Testing" | That is the standalone browser asking for its cookie store. Add `--headless` or `--ephemeral`, or choose Deny |
 | Pages come back as "AI is off" (⏸) | You are in `--host` mode and the host app has AI off for that site. Allow it in the host, or leave out `--host` |
 | The model keeps re-reading the page | Add the rules snippet from section 4 |

@@ -39,10 +39,11 @@ pnpm bench       # benchmark (add -- --live --pw-mcp; run packages/engine/bench/
 ### Use it from Claude Code (or any MCP client)
 
 ```bash
-pnpm connect      # adds the server to Claude Code, and prints the JSON for Cursor, VS Code and other clients
+pnpm connect          # adds the server to Claude Code, and prints the JSON for Cursor, VS Code and other clients
+pnpm connect codex    # adds it to Codex instead (pnpm connect all does both)
 ```
 
-That runs `claude mcp add whittlebrowser -- node <this checkout>/packages/engine/dist/mcp/cli.js`. Any extra arguments go to the
+That runs `claude mcp add whittlebrowser -- node <this checkout>/packages/engine/dist/mcp/cli.js` (or `codex mcp add …`). Any extra arguments go to the
 server, for example `pnpm connect --headless`. Setup for each client: [docs/use-with-ai-tools.md](docs/use-with-ai-tools.md).
 
 Flags: `--headless`, `--ephemeral`, `--profile DIR`, `--channel chrome`, `--budget N`,

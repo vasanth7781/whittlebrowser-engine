@@ -14,7 +14,7 @@ Run once, from the repo root (build first: see [Getting started](getting-started
 claude mcp add whittlebrowser -- node "$PWD/packages/engine/dist/mcp/cli.js"
 ```
 
-`pnpm connect` runs exactly this command for you, and `pnpm connect --headless` adds flags.
+`pnpm connect` runs exactly this command for you, and `pnpm connect --headless` adds flags. For Codex use `pnpm connect codex`.
 
 - This opens its own Chromium window (sites allowed by default; auto-pause and risky-action checks still apply). Add `--headless` for no window.
 - Add `--host` to attach to a host app that implements the [control protocol](control.html), so that app decides which sites the agent may see and approves risky actions.

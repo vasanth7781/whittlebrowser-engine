@@ -47,4 +47,11 @@ describe('docs', () => {
     expect(existsSync(cli)).toBe(true);
     expect(flag).toBe('--headless');
   });
+
+  it('pnpm connect takes a client name without passing it to the server', () => {
+    const repo = join(docs, '..');
+    const out = execFileSync('node', [join(repo, 'scripts/connect.mjs'), 'codex', '--print', '--headless'], { encoding: 'utf8' });
+    const args = JSON.parse(out.slice(out.indexOf('{'))).mcpServers.whittlebrowser.args;
+    expect(args.slice(1)).toEqual(['--headless']);
+  });
 });
