@@ -20,7 +20,7 @@
     <a href="#studio">Studio</a>
     <a href="#compare">Compare</a>
     <a href="#safety">Safety</a>
-    <a href="docs/">Docs</a><a href="/cloud/">Cloud</a>
+    <a href="docs/">Docs</a>
   </nav>
   <a class="btn small" href="docs/getting-started.html">Get started</a>
 </header>
@@ -34,9 +34,8 @@
     <div class="cta">
       <a class="btn" href="docs/use-with-ai-tools.html">Use it with Claude, Cursor, Codex</a>
       <a class="btn ghost" href="#demo">Watch it work ↓</a>
-      <a class="btn ghost" href="/cloud/">Hosted browsers (Cloud)</a>
     </div>
-    <p class="soon"><span class="soon-pill">Coming soon</span> <b>Download for Mac</b>: a light, agentic browser. Until then, use the open-source engine with your own AI tools, or the hosted Cloud.</p>
+    <p class="soon"><span class="soon-pill">Coming soon</span> <b>Download for Mac</b>: a light, agentic browser. Until then, use the open-source engine with your own AI tools.</p>
   </div>
 
   <div class="demo reveal" id="demo">
@@ -97,10 +96,10 @@
 <!-- ============ STATS ============ -->
 <section class="stats">
   <div class="stat reveal"><b data-count="96" data-suffix="%">0</b><span>fewer tokens per page view<br><small>11 pages vs Playwright MCP</small></span></div>
-  <div class="stat reveal"><b data-count="85" data-suffix="%">0</b><span>fewer tokens than browser-use<br><small>all-in per call, 11 pages</small></span></div>
+  <div class="stat reveal"><b data-count="86" data-suffix="%">0</b><span>fewer tokens than browser-use<br><small>all-in per call, 11 pages</small></span></div>
   <div class="stat reveal"><b data-count="0" data-suffix=" / 7">0</b><span>planted secrets leaked<br><small>Playwright MCP: 7 / 7</small></span></div>
   <div class="stat reveal"><b data-count="0" data-suffix=" / 5">0</b><span>hidden injections passed<br><small>Playwright MCP: 5 / 5</small></span></div>
-  <div class="stat reveal"><b data-count="3.7" data-suffix="×">0</b><span>smaller tool definitions<br><small>1,025 vs 3,747 tokens</small></span></div>
+  <div class="stat reveal"><b data-count="4.0" data-suffix="×">0</b><span>smaller tool definitions<br><small>947 vs 3,747 tokens</small></span></div>
 </section>
 
 <!-- ============ WHAT THE MODEL SEES ============ -->
@@ -353,10 +352,10 @@
       <thead><tr><th></th><th class="us">WhittleBrowser</th><th>Playwright MCP</th><th>browser-use</th><th>Stagehand</th><th>AI browsers<br><small>Comet, Atlas…</small></th></tr></thead>
       <tbody>
         <tr><td>Page representation</td><td class="us">Compact text tree, folded, budgeted</td><td>Full accessibility snapshot</td><td>Indexed DOM elements + screenshots</td><td>Hybrid accessibility tree</td><td>Proprietary</td></tr>
-        <tr><td>Avg tokens per page view <small>(page text, 11 pages)</small></td><td class="us"><b>1,230</b></td><td class="bad">27,379</td><td>2,789 + screenshot</td><td>23,659</td><td>not published</td></tr>
-        <tr><td>Avg all-in tokens per call <small>(with prompts, schemas, screenshots)</small></td><td class="us"><b>2,255</b></td><td class="bad">31,126</td><td>15,264</td><td>24,330</td><td>not published</td></tr>
+        <tr><td>Avg tokens per page view <small>(page text, 11 pages)</small></td><td class="us"><b>1,207</b></td><td class="bad">27,354</td><td>2,712 + screenshot</td><td>15,652</td><td>not published</td></tr>
+        <tr><td>Avg all-in tokens per call <small>(with prompts, schemas, screenshots)</small></td><td class="us"><b>2,154</b></td><td class="bad">31,101</td><td>15,187</td><td>16,323</td><td>not published</td></tr>
         <tr><td>After an action</td><td class="us"><b>Diff only</b></td><td>Full snapshot again</td><td>New page state each step</td><td>Re-reads the page</td><td>not published</td></tr>
-        <tr><td>Fixed overhead per call</td><td class="us"><b>1,025</b> · 9 tool defs</td><td class="bad">3,747 · 25 tool defs</td><td>11,007 · system prompt + action schema</td><td>671 · act prompt</td><td>n/a</td></tr>
+        <tr><td>Fixed overhead per call</td><td class="us"><b>947</b> · 9 tool defs</td><td class="bad">3,747 · 25 tool defs</td><td>11,007 · system prompt + action schema</td><td>671 · act prompt</td><td>n/a</td></tr>
         <tr><td>Hidden prompt-injection text <small>(measured, of 5)</small></td><td class="us"><b>0 passed</b></td><td class="bad">5 passed</td><td>3 passed</td><td>4 passed</td><td>Public exploits reported</td></tr>
         <tr><td>Planted secrets reaching the LLM <small>(measured, of 7)</small></td><td class="us"><b>0</b></td><td class="bad">7</td><td>6 <small>(placeholders cover typed values only)</small></td><td>6</td><td>not published</td></tr>
         <tr><td>AI off per site, auto-pause</td><td class="us"><b>Yes</b>, default-deny</td><td>no</td><td>Domain allowlist</td><td>no</td><td>varies</td></tr>
@@ -416,8 +415,7 @@ pnpm bench:agent --smoke         <span class="c"># real-agent run through Claude
   <div class="cols">
     <div><b>Docs</b><a href="docs/getting-started.html">Getting started</a><a href="docs/claude-code.html">Use with Claude Code</a><a href="docs/how-it-works.html">How it works</a><a href="docs/protocol.html">Protocol</a></div>
     <div><b>Features</b><a href="docs/xray-and-cursor.html">X-ray & cursor</a><a href="docs/research.html">Research mode</a><a href="docs/safety.html">Safety model</a><a href="docs/benchmark.html">Benchmark</a></div>
-    <div><b>More</b><a href="docs/comparison.html">Gaps & comparison</a><a href="docs/faq.html">FAQ</a></div>
-    <div><b>Legal</b><a href="legal/terms.html">Terms</a><a href="legal/privacy.html">Privacy</a><a href="legal/acceptable-use.html">Acceptable use</a><a href="legal/refunds.html">Refunds</a></div>
+    <div><b>More</b><a href="docs/comparison.html">Comparison</a><a href="docs/faq.html">FAQ</a></div>
   </div>
 </footer>
 <script type="module" src="main.js"></script>

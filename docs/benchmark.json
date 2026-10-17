@@ -1,5 +1,5 @@
 {
- "date": "2026-10-16",
+ "date": "2026-10-17",
  "tokenizer": "o200k_base",
  "versions": {
   "browserUse": "0.13.11",
@@ -9,11 +9,11 @@
  "pages": [
   {
    "name": "shipping.html",
-   "pw": 457,
+   "pw": 484,
    "bu": 409,
    "buImg": 1468,
-   "sh": 478,
-   "ours": 204
+   "sh": 475,
+   "ours": 206
   },
   {
    "name": "spa.html",
@@ -25,24 +25,24 @@
   },
   {
    "name": "table.html",
-   "pw": 9386,
-   "bu": 960,
+   "pw": 10106,
+   "bu": 1318,
    "buImg": 1468,
-   "sh": 8431,
-   "ours": 502
+   "sh": 8074,
+   "ours": 672
   },
   {
    "name": "article.html",
-   "pw": 2523,
-   "bu": 1754,
+   "pw": 2529,
+   "bu": 955,
    "buImg": 1468,
-   "sh": 2864,
-   "ours": 451
+   "sh": 2885,
+   "ours": 259
   },
   {
    "name": "injection.html",
-   "pw": 204,
-   "bu": 257,
+   "pw": 216,
+   "bu": 252,
    "buImg": 1468,
    "sh": 247,
    "ours": 146
@@ -50,42 +50,42 @@
   {
    "name": "wikipedia: Pancake",
    "pw": 68187,
-   "bu": 4057,
+   "bu": 4058,
    "buImg": 1468,
    "sh": 51867,
    "ours": 1060
   },
   {
    "name": "Hacker News",
-   "pw": 13627,
-   "bu": 5939,
+   "pw": 13440,
+   "bu": 5896,
    "buImg": 1468,
-   "sh": 9122,
-   "ours": 2881
+   "sh": 9046,
+   "ours": 2857
   },
   {
    "name": "GitHub repo",
-   "pw": 20350,
-   "bu": 8291,
+   "pw": 19826,
+   "bu": 8030,
    "buImg": 1468,
-   "sh": 19873,
-   "ours": 2849
+   "sh": 15556,
+   "ours": 2760
   },
   {
    "name": "MDN <input>",
-   "pw": 166541,
-   "bu": 3732,
+   "pw": 166559,
+   "bu": 3731,
    "buImg": 1468,
-   "sh": 149160,
-   "ours": 1449
+   "sh": 66121,
+   "ours": 1451
   },
   {
    "name": "BBC News",
-   "pw": 12156,
-   "bu": 2033,
+   "pw": 11817,
+   "bu": 1937,
    "buImg": 1468,
-   "sh": 9723,
-   "ours": 2048
+   "sh": 9419,
+   "ours": 1927
   },
   {
    "name": "Python docs",
@@ -100,10 +100,10 @@
   {
    "name": "fill shipping form + submit",
    "steps": 7,
-   "pw": 3167,
-   "bu": 1024,
-   "sh": 2868,
-   "ours": 505
+   "pw": 3393,
+   "bu": 1019,
+   "sh": 2850,
+   "ours": 527
   },
   {
    "name": "todo: tick 3 items, load more",
@@ -116,17 +116,17 @@
   {
    "name": "catalog: find Widget 27, add to cart",
    "steps": 3,
-   "pw": 9400,
-   "bu": 1920,
-   "sh": 8431,
-   "ours": 742
+   "pw": 10120,
+   "bu": 2636,
+   "sh": 8074,
+   "ours": 922
   },
   {
    "name": "read article (first 2 sections)",
    "steps": 1,
-   "pw": 2523,
-   "bu": 1754,
-   "sh": 2864,
+   "pw": 2529,
+   "bu": 955,
+   "sh": 2885,
    "ours": 1924
   }
  ],
@@ -153,26 +153,26 @@
    "schema": 5765
   },
   "sh": 671,
-  "ours": 1025
+  "ours": 947
  },
  "allin": {
   "ours": {
-   "text": 13534,
+   "text": 13282,
    "img": 0,
-   "fixed": 11275
+   "fixed": 10417
   },
   "pw": {
-   "text": 301165,
+   "text": 300898,
    "img": 0,
    "fixed": 41217
   },
   "bu": {
-   "text": 30682,
+   "text": 29836,
    "img": 16148,
    "fixed": 121077
   },
   "sh": {
-   "text": 260251,
+   "text": 172176,
    "img": 0,
    "fixed": 7381
   }

@@ -9,7 +9,7 @@ shown to models as **compact, ref-stable, diffed text**, and secrets and hidden 
 - The WhittleBrowser desktop browser (per-site AI, X-ray, ghost cursor, built-in chat, Demo Studio) is developed in a separate repository and is not released yet. The engine here works on its own with any MCP client.
 - `website`: the animated landing page and docs site (`pnpm --filter @whittlebrowser/website dev`).
 
-See [docs/GAPS.md](docs/GAPS.md) for the gap analysis, [docs/PROTOCOL.md](docs/PROTOCOL.md) for the format,
+See [docs/COMPARISON.md](docs/COMPARISON.md) for how it compares, [docs/PROTOCOL.md](docs/PROTOCOL.md) for the format,
 and [docs/BENCHMARK.md](docs/BENCHMARK.md) for the numbers.
 
 ## Benchmark: WhittleBrowser vs Playwright MCP, browser-use and Stagehand
@@ -18,9 +18,9 @@ Same 11 pages (5 test pages + 6 live sites), same Chromium, each tool's own code
 
 | | Playwright MCP | browser-use | Stagehand | **WhittleBrowser** |
 |---|---:|---:|---:|---:|
-| page text, 11 pages | 301,165 | 30,682 (+ screenshots) | 260,251 | **13,534** |
-| all-in incl. prompts/tool defs/screenshots | 342,382 | 167,907 | 267,632 | **24,809** |
-| WhittleBrowser uses | 93% fewer | 85% fewer | 91% fewer | |
+| page text, 11 pages | 300,898 | 29,836 (+ screenshots) | 172,176 | **13,282** |
+| all-in incl. prompts/tool defs/screenshots | 342,115 | 167,061 | 179,557 | **23,699** |
+| WhittleBrowser uses | 93% fewer | 86% fewer | 87% fewer | |
 | planted secrets reaching the model | 7 / 7 | 6 / 7 | 6 / 7 | **0 / 7** |
 | hidden prompt injections reaching the model | 5 / 5 | 3 / 5 | 4 / 5 | **0 / 5** |
 
@@ -48,12 +48,6 @@ Flags: `--headless`, `--ephemeral`, `--profile DIR`, `--channel chrome`, `--budg
 `--default-off`, `--no-identify`, `--humanize`, `--bot-key FILE --bot-agent URL` (Web Bot Auth).
 
 Secrets for `type secret:NAME`: env `WB_SECRET_NAME=…` or `~/.whittlebrowser/secrets.json` (chmod 600).
-
-## Cloud (commercial)
-
-A hosted version runs the same engine in isolated machines behind an API, with a live view so a person can finish
-logins, one-time codes and challenges. It is prepaid credits only. Its code is proprietary and lives in a separate
-repository; everything in this repository is MIT.
 
 ## Tools
 

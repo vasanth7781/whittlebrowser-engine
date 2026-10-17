@@ -13,10 +13,6 @@ research { urls: ["a.com/x", "b.com/y"], limit: 5, budget: 450, keep: true }
 
 Every page still goes through the gates: sites with AI off are reported as `⏸`, payment pages auto-pause, hidden injections are dropped and visible ones flagged `⚠`.
 
-## Split view
-
-In the browser, research tabs open in the background and appear as **live tiles next to your tab**; your own tab never loses focus. Each tile has **Open** (make it your tab) and **✕**. ⌘⇧S toggles split view.
-
 ## Example
 
 > Use whittlebrowser. Search for "best espresso grinder 2026", run research on the top 5 results, and give me a comparison table of price, burr type and pros/cons.

@@ -1,9 +1,9 @@
 # Use with Claude Code
 
-The browser has no model inside it. The thinking is done by whatever MCP client connects: with Claude Code, that is the Claude model you are logged into there.
+The engine has no model inside it. The thinking is done by whatever MCP client connects: with Claude Code, that is the Claude model you are logged into there.
 
 ```
-you → Claude Code (Claude thinks) → whittlebrowser MCP server → WhittleBrowser window
+you → Claude Code (Claude thinks) → whittlebrowser MCP server → Chromium window
 ```
 
 ## Register the server
@@ -15,7 +15,7 @@ claude mcp add whittlebrowser -- node "$PWD/packages/engine/dist/mcp/cli.js"
 ```
 
 - This opens its own Chromium window (sites allowed by default; auto-pause and risky-action checks still apply). Add `--headless` for no window.
-- Add `--shell` to attach to a running WhittleBrowser desktop window instead, so your AI dot, auto-pause and approvals apply and the ghost cursor is on. The desktop browser is a separate repository and is not released yet.
+- Add `--shell` to attach to a host app that implements the [control protocol](control.html), so that app decides which sites the agent may see and approves risky actions.
 - Add `--scope user` after `add` to make it available in every folder.
 - `claude mcp list` / `claude mcp remove whittlebrowser` to inspect or remove.
 

@@ -45,6 +45,6 @@ Each ref carries a fingerprint (role + name + occurrence). When React or Vue thr
 
 Everything leaving the engine passes through one function. It turns cards (Luhn-checked), API keys, JWTs, SSNs and IBANs into reversible tokens like `‹card:1›` and replaces vault values with `‹secret:NAME›`. The model can type a token back; the real value is substituted locally.
 
-## 6. The browser
+## 6. Host apps
 
-The Electron shell adds the user-facing controls: the AI dot, auto-pause, approvals, X-ray, ghost cursor, live steps, split view for agent tabs, Tab Sleeper and a RAM meter. Agents talk to it over a token-protected local control channel and drive tabs over loopback CDP.
+By default the engine runs standalone and decides from flags (`--default-off`, `--risk`, `--allow-site`). A host app, such as a desktop browser, can instead own those decisions (which sites the agent may see, approvals, human handoff, a log of what was sent) by implementing the small local [control protocol](control.html). The engine then attaches to the host's Chromium over CDP.

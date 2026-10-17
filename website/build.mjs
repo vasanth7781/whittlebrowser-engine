@@ -20,20 +20,17 @@ const DOCS = [
   ['control', 'CONTROL.md', 'Concepts'],
   ['safety', 'safety.md', 'Concepts'],
   ['messy-pages', 'messy-pages.md', 'Concepts'],
-  ['chat', 'chat.md', 'Features'],
   ['xray-and-cursor', 'xray-and-cursor.md', 'Features'],
   ['research', 'research.md', 'Features'],
-  ['studio', 'studio.md', 'Features'],
   ['benchmark', 'BENCHMARK.md', 'Results'],
-  ['comparison', 'GAPS.md', 'Results'],
+  ['comparison', 'COMPARISON.md', 'Results'],
   ['faq', 'faq.md', 'Results'],
-  ['roadmap', 'ROADMAP.md', 'Results'],
 ];
 const linkMap = Object.fromEntries(DOCS.map(([slug, file]) => [file, slug + '.html']));
 const pages = DOCS.map(([slug, file, group]) => {
   let md = readFileSync(join(docsSrc, file), 'utf8');
   md = md.replace(/\]\(([A-Za-z-]+\.md)(#[^)]*)?\)/g, (m, f, h = '') => `](${linkMap[f] || f}${h})`);
-  const SHORT = { comparison: 'Gaps & comparison', 'xray-and-cursor': 'X-ray & human cursor', 'messy-pages': 'Pages without semantic tags', roadmap: 'Roadmap & tool pack' };
+  const SHORT = { comparison: 'Comparison', 'xray-and-cursor': 'X-ray & human cursor', 'messy-pages': 'Pages without semantic tags' };
   const title = SHORT[slug] || (md.match(/^# (.+)$/m) || [, slug])[1].replace(/^Benchmark .*/, 'Benchmark');
   // Headings get ids so docs can link to sections (getting-started.html#everyday-browser-features).
   const html = marked.parse(md).replace(/<h([23])>(.+?)<\/h\1>/g, (_m, n, inner) => `<h${n} id="${inner.replace(/<[^>]+>/g, '').toLowerCase().replace(/&[a-z]+;/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}">${inner}</h${n}>`);

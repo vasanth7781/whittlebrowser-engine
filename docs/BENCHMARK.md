@@ -2,7 +2,7 @@
 
 How many tokens does a browser agent spend to see a page, and what leaks to the model? We ran **WhittleBrowser**, **Playwright MCP**, **browser-use** and **Stagehand** on the same pages in the same browser and counted exactly what each sends to the LLM.
 
-> Including fixed per-call overhead, WhittleBrowser used **93% fewer tokens than Playwright MCP, 85% fewer than browser-use and 91% fewer than Stagehand**, and it was the only one of the four that let none of the planted secrets or hidden injections through.
+> Including fixed per-call overhead, WhittleBrowser used **93% fewer tokens than Playwright MCP, 86% fewer than browser-use and 87% fewer than Stagehand** to look at the same 11 pages, and it was the only one of the four that let none of the planted secrets or hidden injections through. In real agent runs on whole tasks the saving is smaller and varies by task: see [With a real agent](#with-a-real-agent).
 
 <figure class="chart" data-chart="allin" data-src="../data/bench.json" data-title="All-in tokens for one look at each of 11 pages">
 <figcaption>What one look at a page really costs</figcaption>
@@ -10,13 +10,33 @@ How many tokens does a browser agent spend to see a page, and what leaks to the 
 <div class="chart-plot"></div><small class="chart-date"></small>
 </figure>
 
+## Read this first
+
+Two different benchmarks, answering two different questions:
+
+1. **Page views (no model).** For the same pages, how many tokens does each tool put in front of the model? This is deterministic and cheap to rerun. It is the first half of this page.
+2. **Real agent runs (Claude).** With a real model driving each tool, does the task still get done, and what does it cost? This is the section [With a real agent](#with-a-real-agent). Results are noisier and cover fewer tasks.
+
+Terms used below:
+
+- **Token:** the unit a language model reads and is billed in, roughly three-quarters of a word. We count with the `o200k_base` tokenizer as a model-neutral stand-in.
+- **Page view / snapshot:** the text a tool returns so the model can see the page.
+- **Fixed overhead:** text sent on every request that is not the page, such as tool definitions and system prompts. Prompt caching makes repeats cheaper to pay for, but they still fill the context window.
+- **Modeled:** computed from measured page sizes and how a tool calls its model, instead of running a real agent. We say so wherever it applies.
+
+**The short version.**
+
+- On page views, WhittleBrowser is far smaller than Playwright MCP and Stagehand, and about half the size of browser-use. On two text-heavy pages (BBC News, Python docs) its page text is about the same size as browser-use's.
+- On whole tasks with a real model, WhittleBrowser finished every task it was given. It used far fewer tokens on large or re-rendering pages, and about the same as the others on small pages. One live task, counting star ratings, needed extra engine support before it was cheap (described below).
+- Stagehand's text view, as we drove it, was about as small as ours over whole tasks, even though its page views are larger in the table below.
+
 ## Results at a glance
 
 | | Playwright MCP | browser-use | Stagehand | WhittleBrowser |
 |---|---:|---:|---:|---:|
-| Page text, 11 pages | 301,165 | 30,682 | 260,251 | **13,534** |
-| All-in, 11 pages | 342,382 | 167,907 | 267,632 | **24,809** |
-| Fixed overhead per call | 3,747 | 11,007 | 671 | **1,025** |
+| Page text, 11 pages | 300,898 | 29,836 | 172,176 | **13,282** |
+| All-in, 11 pages | 342,115 | 167,061 | 179,557 | **23,699** |
+| Fixed overhead per call | 3,747 | 11,007 | 671 | **947** |
 | Planted secrets reaching the model (of 7) | 7 | 6 | 6 | **0** |
 | Hidden injections reaching the model (of 5) | 5 | 3 | 4 | **0** |
 
@@ -57,18 +77,18 @@ How many tokens does a browser agent spend to see a page, and what leaks to the 
 
 | Page | Playwright MCP | browser-use | Stagehand | WhittleBrowser |
 |---|---:|---:|---:|---:|
-| shipping.html | 457 | 409 | 478 | **204** |
+| shipping.html | 484 | 409 | 475 | **206** |
 | spa.html | 2,080 | 1,553 | 2,402 | **392** |
-| table.html | 9,386 | 960 | 8,431 | **502** |
-| article.html | 2,523 | 1,754 | 2,864 | **451** |
-| injection.html | 204 | 257 | 247 | **146** |
-| wikipedia: Pancake | 68,187 | 4,057 | 51,867 | **1,060** |
-| Hacker News | 13,627 | 5,939 | 9,122 | **2,881** |
-| GitHub repo | 20,350 | 8,291 | 19,873 | **2,849** |
-| MDN <input> | 166,541 | 3,732 | 149,160 | **1,449** |
-| BBC News | 12,156 | 2,033 | 9,723 | **2,048** |
+| table.html | 10,106 | 1,318 | 8,074 | **672** |
+| article.html | 2,529 | 955 | 2,885 | **259** |
+| injection.html | 216 | 252 | 247 | **146** |
+| wikipedia: Pancake | 68,187 | 4,058 | 51,867 | **1,060** |
+| Hacker News | 13,440 | 5,896 | 9,046 | **2,857** |
+| GitHub repo | 19,826 | 8,030 | 15,556 | **2,760** |
+| MDN <input> | 166,559 | 3,731 | 66,121 | **1,451** |
+| BBC News | 11,817 | 1,937 | 9,419 | **1,927** |
 | Python docs | 5,654 | 1,697 | 6,084 | **1,552** |
-| **Total** | **301,165** | **30,682** | **260,251** | **13,534** |
+| **Total** | **300,898** | **29,836** | **172,176** | **13,282** |
 
 browser-use's page text is the leanest of the three competitors. It keeps mostly interactive elements and nearby text, then adds a screenshot and a large fixed prompt on every step. On two text-heavy pages (BBC News, Python docs) its page text is about the same size as ours. WhittleBrowser's advantage there comes from the fixed overhead and screenshots, not the page text.
 
@@ -82,10 +102,10 @@ browser-use's page text is the leanest of the three competitors. It keeps mostly
 
 | Task | Steps | Playwright MCP | browser-use (modeled) | Stagehand (modeled) | WhittleBrowser |
 |---|---:|---:|---:|---:|---:|
-| fill shipping form + submit | 7 | 3,167 | 1,024 | 2,868 | **505** |
+| fill shipping form + submit | 7 | 3,393 | 1,019 | 2,850 | **527** |
 | todo: tick 3 items, load more | 5 | 10,675 | 7,765 | 9,608 | **684** |
-| catalog: find Widget 27, add to cart | 3 | 9,400 | 1,920 | 8,431 | **742** |
-| read article (first 2 sections) | 1 | 2,523 | 1,754 | 2,864 | **1,924** |
+| catalog: find Widget 27, add to cart | 3 | 10,120 | 2,636 | 8,074 | **922** |
+| read article (first 2 sections) | 1 | 2,529 | 955 | 2,885 | **1,924** |
 
 The article task asks for the full text of two sections, so WhittleBrowser returns the article's content (about 1.9k tokens). The browser-use model counts only one page state there, which under-counts it: its `extract` action sends the page markdown in a separate call.
 
@@ -93,10 +113,10 @@ The article task asks for the full text of two sections, so WhittleBrowser retur
 
 | Tool | Page text | Screenshots | Fixed overhead | All-in | WhittleBrowser saves |
 |---|---:|---:|---:|---:|---:|
-| Playwright MCP | 301,165 | – | 41,217 | **342,382** | 93% |
-| browser-use | 30,682 | 16,148 | 121,077 | **167,907** | 85% |
-| Stagehand | 260,251 | – | 7,381 | **267,632** | 91% |
-| **WhittleBrowser** | 13,534 | – | 11,275 | **24,809** |  |
+| Playwright MCP | 300,898 | – | 41,217 | **342,115** | 93% |
+| browser-use | 29,836 | 16,148 | 121,077 | **167,061** | 86% |
+| Stagehand | 172,176 | – | 7,381 | **179,557** | 87% |
+| **WhittleBrowser** | 13,282 | – | 10,417 | **23,699** |  |
 
 ## Safety
 
@@ -170,7 +190,7 @@ The page-view numbers above leave one question open: does a model still finish t
 - Success is close to level. WhittleBrowser finished all 42 runs; the misses were Playwright MCP on two `spa` runs and one `table` run, Stagehand on three `books-five-star` runs, and browser-use on one login run.
 - Where pages are big or re-render, a small view helps a lot: on `spa` WhittleBrowser used about 23k tokens against 97k for Playwright MCP and 106k for browser-use, and on `form` about 20k against 46k and 147k.
 - Where pages are small, the savings mostly disappear. Tool definitions and the model's own turns dominate, and on short tasks (`table`, `books-cheapest`) all four tools are within a few thousand tokens of each other.
-- **Stagehand was about level with WhittleBrowser** (27k against 28k on Haiku, 25k against 20k on Sonnet), so the 91% page-view gap above does not carry over to whole tasks on pages this size. We have not isolated why. This arm leaves out Stagehand's own agent prompts and exposes 8 small tools, and the model usually needed only one snapshot, so it probably flatters Stagehand.
+- **Stagehand was about level with WhittleBrowser** (27k against 28k on Haiku, 25k against 20k on Sonnet), so its larger page views in the tables above do not turn into larger whole-task costs on pages this size. We have not isolated why. This arm leaves out Stagehand's own agent prompts and exposes 8 small tools, and the model usually needed only one snapshot, so it probably flatters Stagehand.
 - **`books-five-star` exposed a gap, which we then fixed.** A star rating is a CSS class, so no tool's text view shows it. Playwright MCP has a JavaScript evaluate tool and counted the elements in 2 to 6 calls; WhittleBrowser had no equivalent and took 15 to 20 screenshots, about 128k tokens against 32k. We added two things: text-less rating elements now show as `rating 5/5` in the page view, and `find css:SELECTOR` counts visible matches and lists their class and attributes without running any script. After that WhittleBrowser took 4 to 15 calls and about 39k tokens on this task, still above Playwright MCP's 32k. The "before fix" rows keep the old numbers for comparison.
 - The other tasks also moved between the two WhittleBrowser runs (for example `spa` 27k to 23k), and the same code ran in both, so with 3 repetitions differences of that size are noise. Only the `books-five-star` change is large enough to be the fix.
 - On Sonnet WhittleBrowser now uses fewer tokens than Playwright MCP (20k against 29k per run) but still costs more per pass ($0.145 against $0.119 on Claude list prices). We have not isolated why; the cache-read versus cache-write mix is a likely part of it.
@@ -179,7 +199,7 @@ The page-view numbers above leave one question open: does a model still finish t
 
 ## Limits of this benchmark
 
-- The page-view tables measure **input size and leaks** with no model. The agent section adds success and cost, but only for Claude (Haiku and Sonnet), 7 tasks and 3 repetitions each, so one slow run moves an average. A larger run with more models (for example, WebVoyager tasks) is on the [roadmap](roadmap.html).
+- The page-view tables measure **input size and leaks** with no model. The agent section adds success and cost, but only for Claude (Haiku and Sonnet), 7 tasks and 3 repetitions each, so one slow run moves an average. It does not cover other models, and the tasks are small.
 - Token counts use one tokenizer; real counts vary a little by model.
 - browser-use and Stagehand task totals are modeled; page sizes and safety numbers are measured.
 - Live sites change daily, so numbers drift between runs. The JSON with every number is in `docs/benchmark.json`.

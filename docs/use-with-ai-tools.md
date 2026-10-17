@@ -1,7 +1,7 @@
 # Use it with Claude, Cursor, Codex and other AI tools
 
 The engine is an **MCP server** with nine small tools (`observe`, `act`, `navigate`, `find`, `extract`, `research`, `tabs`, `screenshot`, `wait`). Any tool that can
-run an MCP server can use it, and it can drive the experimental desktop browser too. This page shows how to connect each tool, what to ask, and how to teach a model
+run an MCP server can use it. This page shows how to connect each tool, what to ask, and how to teach a model
 to use it cheaply.
 
 ## 1. Install
@@ -21,7 +21,7 @@ Your tools will run this command. Use the **absolute path** to the file:
 node /absolute/path/to/whittlebrowser-engine/packages/engine/dist/mcp/cli.js
 ```
 
-> **Do not run `npx whittlebrowser-mcp`.** That name on npm belongs to a different project, not this one. We will publish under our own scope and update this page.
+> **Do not run `npx whittlebrowser-mcp`.** That name on npm belongs to a different project, not this one. This package is not on npm yet, so use the path above.
 
 Add flags after the path, for example `--headless` (no window), `--ephemeral` (throwaway profile) or `--budget 4000` (cap tokens per page view). The full list is in
 [Use with Claude Code](claude-code.html).
@@ -172,49 +172,27 @@ Models do better when they know the pattern. Paste this into `CLAUDE.md`, `AGENT
 
 For **Claude Skills**, copy the ready-made skill instead: `packages/engine/skills/whittlebrowser/SKILL.md`, into `~/.claude/skills/whittlebrowser/SKILL.md` (or your project's `.claude/skills/`).
 
-## 5. Use it from your own code or any LLM API
+## 5. Use it from your own code
 
-Two options, depending on where the browser runs.
-
-**On your machine, from TypeScript.** The engine is a library, so you can run it inside your own agent loop. See `packages/engine/README.md` for the exports (`Session`, `launch`, the serializer and the privacy filter).
-
-**Hosted, over HTTP, from any language.** [WhittleBrowser Cloud](../cloud/docs) runs the same engine in an isolated machine behind a plain REST API, with a live view for a person to finish
-logins and one-time codes. Because it is ordinary HTTP, you can hand it to any model as function calls. A sketch using the Anthropic SDK (adapt the model name and add error handling; this
-is an outline, not a tested package):
+The engine is a TypeScript library, so you can run it inside your own agent loop and hand the text it returns to any model API. This example opens a page, clicks the first link and searches for links:
 
 ```ts
-import Anthropic from "@anthropic-ai/sdk";
+import { Session, launch, StaticPolicy } from '@whittlebrowser/engine';
 
-const API = "https://api.example.com";                       // your Cloud API base URL
-const call = (path: string, init: RequestInit = {}) =>
-  fetch(API + path, { ...init, headers: { Authorization: `Bearer ${process.env.WB_KEY}`, "content-type": "application/json" } }).then((r) => r.json());
+const browser = await launch({ headless: true, profileDir: null });
+const session = new Session(browser.context, new StaticPolicy({}), { robots: 'off' });
 
-const session = await call("/v1/sessions", { method: "POST", body: JSON.stringify({ timeout_seconds: 900 }) });
-const tool = (name: string, description: string, props: object) => ({ name, description, input_schema: { type: "object" as const, properties: props } });
-const tools = [
-  tool("navigate", "Open a URL", { url: { type: "string" } }),
-  tool("observe", "Read the page as compact text with [n] refs", {}),
-  tool("act", "Run steps on refs, e.g. [{do:'click',ref:3}]", { steps: { type: "array", items: { type: "object" } } }),
-  tool("handoff", "Ask the person to finish a login or code in the live view", { reason: { type: "string" } }),
-];
+const view = await session.navigate('https://example.com');   // compact text with [n] refs
+console.log(view);
 
-const client = new Anthropic();
-const messages: Anthropic.MessageParam[] = [{ role: "user", content: "Open example.com and tell me what the page says." }];
-for (;;) {
-  const res = await client.messages.create({ model: "claude-sonnet-5-5", max_tokens: 2000, tools, messages });
-  messages.push({ role: "assistant", content: res.content });
-  const uses = res.content.filter((b): b is Anthropic.ToolUseBlock => b.type === "tool_use");
-  if (!uses.length) break;
-  messages.push({
-    role: "user",
-    content: await Promise.all(uses.map(async (u) => ({
-      type: "tool_result" as const, tool_use_id: u.id,
-      content: (await call(`/v1/sessions/${session.id}/${u.name}`, { method: "POST", body: JSON.stringify(u.input) })).text ?? "",
-    }))),
-  });
-}
-await call(`/v1/sessions/${session.id}`, { method: "DELETE" });
+const link = view.match(/\[(\d+)\] link/);
+if (link) console.log(await session.act([{ do: 'click', ref: +link[1] }]));   // outcome + what changed
+console.log(await session.find('role:link'));
+
+await browser.close();
 ```
+
+`Session` has the same operations as the MCP tools: `observe`, `act`, `navigate`, `find`, `extract`, `research`, `tabs`, `screenshot` and `wait`. Return values are plain strings, ready to put in a tool result for your model. The exports are listed in `packages/engine/README.md`.
 
 ## 6. If something does not work
 
@@ -223,5 +201,5 @@ await call(`/v1/sessions/${session.id}`, { method: "DELETE" });
 | The server does not appear | Use the absolute path, Node 22 or newer, and run `pnpm --filter @whittlebrowser/engine build` again after pulling changes |
 | "Executable doesn't exist" | Run `npx playwright-core install chromium` |
 | A keychain prompt for "Chrome for Testing" | That is the standalone browser asking for its cookie store. Add `--headless` or `--ephemeral`, or choose Deny |
-| Pages come back as "AI is off" (⏸) | You are in `--shell` mode and the site's AI dot is Off. Set it to Allowed, or use standalone mode |
+| Pages come back as "AI is off" (⏸) | You are in `--shell` mode and the host app has AI off for that site. Allow it in the host, or leave out `--shell` |
 | The model keeps re-reading the page | Add the rules snippet from section 4 |

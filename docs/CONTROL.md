@@ -3,7 +3,7 @@
 The engine does not decide on its own what an agent may see or do. It asks a **policy**. In the
 standalone mode a `StaticPolicy` answers from flags. When a browser (or any host app) runs the agent,
 the engine talks to that host over a small local HTTP protocol, so the person using the host stays in
-control: the AI dot, approvals, human handoff and the "What AI sees" log all come from this.
+control: per-site AI modes, approvals, human handoff and a log of what was sent all come from this.
 
 You can implement this protocol in your own app. The reference implementation is the desktop
 browser's control server (in the browser repository) and `ShellPolicy` in `packages/engine/src/driver/policy.ts` (client).
@@ -47,5 +47,4 @@ replaced by placeholders before they leave the engine.
 `Policy` (in `packages/engine/src/driver/policy.ts`) is the interface behind these endpoints:
 `siteMode`, `approve`, `allowedSensitiveHosts`, plus the optional `waitForUser`, `log`, `openTab` and
 `excludedTargets`. A host that embeds the engine as a library can implement `Policy` directly and skip
-HTTP entirely. The hosted cloud service does this: its handoff is a live-view page where the user
-completes the step and clicks Done.
+HTTP entirely.

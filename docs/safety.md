@@ -10,12 +10,9 @@ WhittleBrowser assumes web pages are hostile and that anything sent to an LLM ma
 | Secrets in page text | Scrubbed into reversible tokens (`‹key:1›`) at a single choke point. |
 | Secrets in form fields | Masked inside the page (`= "•••" ⚿password`); never cross into Node. |
 | Typing your passwords | Vault refs (`secret:NAME`) resolved locally; echoed values scrubbed. |
-| AI on sensitive sites | Per-site Off/Ask/Allowed (Off by default in the browser). Auto-pause on banks, cloud consoles, password managers, card/ID/API-key fields and key pages. |
-| Irreversible actions | Pay, order, delete, send, publish, transfer, grant… need approval (Agent panel), or `confirm:true` in headless mode. `confirm()` dialogs are dismissed unless approved. |
+| AI on sensitive sites | Per-site Off/Ask/Allowed when a host app owns the policy (`--default-off` makes standalone mode start with AI off). Auto-pause on banks, cloud consoles, password managers, card/ID/API-key fields and key pages. |
+| Irreversible actions | Pay, order, delete, send, publish, transfer, grant… need approval from the host app, or `confirm:true` from a headless agent. `confirm()` dialogs are dismissed unless approved. |
 | Data exfiltration | Jumps to another site with a long query string need approval; URL query values are elided in views; uploads outside a sandbox folder need approval. |
-| Private browsing | Private tabs use an in-memory profile wiped on last close, are excluded from session restore, and are invisible to agents (`tabs` doesn't list them and `observe` can't read them). |
-| Device and site permissions | Deny by default. Camera, mic, location, notifications, clipboard read, MIDI and screen capture prompt the user; decisions are per origin. Agent-opened tabs are always denied. USB/HID/serial/Bluetooth choosers are off. |
-| Invalid certificates | Warning page; only the user can proceed, per host and certificate fingerprint, for this session. The address bar then shows **Not trusted**. |
 | Screenshots | JPEG with sensitive fields blurred; text views are preferred. |
 
 ## Honest identity
