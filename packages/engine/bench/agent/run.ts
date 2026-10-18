@@ -13,11 +13,10 @@
  *   flags: --arms a,b  --models m,n  --tasks t1,t2  --reps N  --jobs N  --out DIR
  * Results append to bench/agent/results/runs.jsonl and finished (arm, model, task, rep) cells are skipped on rerun.
  */
-import { spawn } from 'node:child_process';
-import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { spawn, spawnSync } from 'node:child_process';
+import { appendFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { tmpdir } from 'node:os';
 import { chromium } from 'playwright-core';
 import { TASKS, type Task } from './tasks.js';
 
@@ -75,9 +74,30 @@ interface Run {
   input: number; cacheWrite: number; cacheRead: number; output: number; costUsd: number; ms: number; error?: string;
 }
 
+/**
+ * Stops every process still tied to a finished run (its browsers and helper servers), then removes the run folder.
+ * It asks politely, waits, then force-kills, and never throws: a stray temp folder must not stop a benchmark.
+ */
+function reap(work: string) {
+  const alive = () => spawnSync('pgrep', ['-f', work], { stdio: 'ignore' }).status === 0;
+  const pause = (ms: number) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+  spawnSync('pkill', ['-TERM', '-f', work], { stdio: 'ignore' });
+  for (let i = 0; i < 20 && alive(); i++) pause(100);
+  if (alive()) {
+    spawnSync('pkill', ['-KILL', '-f', work], { stdio: 'ignore' });
+    pause(200);
+  }
+  try {
+    rmSync(work, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
+  } catch {
+    /* harmless: /tmp is cleaned by the system */
+  }
+}
+
 function runOne(arm: string, model: string, task: Task, rep: number): Promise<Run> {
-  const work = join(tmpdir(), `wb-agent-${process.pid}-${arm}-${task.id}-${rep}-${Math.random().toString(36).slice(2, 7)}`);
-  mkdirSync(work, { recursive: true });
+  // A short path on purpose: Chrome keeps a unix socket in its profile folder, and macOS rejects socket paths over 104
+  // characters, which the default temp folder (/var/folders/...) plus a profile name exceeds.
+  const work = mkdtempSync('/tmp/wbr-');
   const { server, deny } = armServer(arm, work);
   const cfg = join(work, 'mcp.json');
   writeFileSync(cfg, JSON.stringify({ mcpServers: { arm: server } }));
@@ -90,13 +110,16 @@ function runOne(arm: string, model: string, task: Task, rep: number): Promise<Ru
   ];
   const t0 = Date.now();
   return new Promise((done) => {
-    const child = spawn('claude', args, { cwd: work, stdio: ['ignore', 'pipe', 'pipe'] });
+    // TMPDIR points at the run's own folder, so every browser the tool starts keeps its profile there. When the run ends we
+    // can then find and stop anything still using that folder: a tool's browser does not reliably die with `claude`.
+    const child = spawn('claude', args, { cwd: work, env: { ...process.env, TMPDIR: work }, stdio: ['ignore', 'pipe', 'pipe'] });
     let buf = '', err = '';
     child.stdout.on('data', (d) => (buf += d));
     child.stderr.on('data', (d) => (err = (err + d).slice(-1500)));
     const kill = setTimeout(() => child.kill('SIGKILL'), timeoutMs);
     child.on('close', () => {
       clearTimeout(kill);
+      reap(work);
       let toolCalls = 0, toolResultChars = 0;
       let result: any = null;
       for (const line of buf.split('\n')) {
