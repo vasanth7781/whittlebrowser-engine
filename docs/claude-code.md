@@ -35,6 +35,17 @@ claude mcp add whittlebrowser -- node "$PWD/packages/engine/dist/mcp/cli.js"
 | `screenshot` | JPEG with sensitive fields blurred (last resort) |
 | `wait` | For text, for a delay, or hand control to you (CAPTCHA, 2FA) |
 
+## Commands
+
+Two small commands run instead of the server:
+
+| Command | What it does |
+|---|---|
+| `whittlebrowser install-skill [--dir SKILLS_DIR]` | copies the bundled Claude skill to `~/.claude/skills/whittlebrowser` |
+| `whittlebrowser print-config [server flags]` | prints the MCP config JSON with full paths, for apps that do not see your shell PATH (Claude Desktop) |
+
+With `npx` they are `npx -y @whittlebrowser/engine install-skill` and, after `npm i -g @whittlebrowser/engine`, `whittlebrowser print-config`.
+
 ## Flags
 
 `--headless`, `--ephemeral`, `--profile DIR`, `--channel chrome`, `--budget N`, `--allow-site HOST`, `--risk confirm|auto|deny`, `--robots off|warn|enforce`, `--default-off`, `--no-identify`, `--allow-file-urls`, `--humanize`, `--show-cursor`, `--no-cursor`, `--xray`, `--bot-key FILE --bot-agent URL`, `--host`.

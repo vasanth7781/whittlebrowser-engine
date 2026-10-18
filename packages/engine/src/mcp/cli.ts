@@ -5,6 +5,7 @@
  *   whittlebrowser                        launch Chromium with ~/.whittlebrowser/profile (headed)
  *   whittlebrowser --host                 drive a running host app, such as the desktop browser (its per-site AI modes and approvals apply)
  *   whittlebrowser --cdp http://127.0.0.1:9222
+ *   whittlebrowser install-skill          install the Claude skill (see commands.ts); print-config prints the MCP config JSON
  *
  * Flags: --headless --ephemeral --profile DIR --channel chrome --budget N --allow-site HOST (repeatable)
  *        --risk confirm|auto|deny --robots off|warn|enforce --default-off --no-identify --allow-file-urls --humanize
@@ -31,6 +32,13 @@ function parse(argv: string[]) {
     } else o[k] = true;
   }
   return o;
+}
+
+// Two small commands run instead of the server.
+const subcommand = process.argv[2];
+if (subcommand === 'install-skill' || subcommand === 'print-config') {
+  const { runCommand } = await import('./commands.js');
+  process.exit(await runCommand(subcommand, process.argv.slice(3)));
 }
 
 const args = parse(process.argv.slice(2));

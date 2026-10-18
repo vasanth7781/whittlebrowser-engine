@@ -2,6 +2,13 @@
 
 All notable changes to `@whittlebrowser/engine`. Dates are release dates.
 
+## 0.1.1 (2026-10-18)
+
+- `whittlebrowser install-skill` installs the bundled Claude skill (before, only a source checkout could).
+- `whittlebrowser print-config` prints the MCP config with full paths, for Claude Desktop with an nvm Node.
+- Metadata for the official MCP Registry (`mcpName` in package.json and `server.json`).
+- Docs: how the benchmark's Playwright numbers are measured (see docs/BENCHMARK.md).
+
 ## 0.1.0 (2026-10-18)
 
 First public release.
