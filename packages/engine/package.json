@@ -43,7 +43,7 @@
     "@types/node": "^22.20.5",
     "js-tiktoken": "^1.0.21",
     "tsx": "^4.20.0",
-    "typescript": "^5.9.3",
+    "typescript": "^7.0.2",
     "vitest": "^3.2.7",
     "yaml": "^2.9.1"
   }
