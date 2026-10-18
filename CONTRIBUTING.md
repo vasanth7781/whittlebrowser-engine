@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for helping. This repository is MIT licensed (see [LICENSE](LICENSE)).
+Thanks for helping. This repository is MIT licensed (see [LICENSE](LICENSE)). By taking part you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md). Report security problems privately, see [SECURITY.md](SECURITY.md).
 
 ## Set up
 

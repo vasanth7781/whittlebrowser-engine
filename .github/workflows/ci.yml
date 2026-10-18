@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      # pnpm's version comes from "packageManager" in the root package.json.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm --filter @whittlebrowser/engine build
+
+      - name: Typecheck
+        run: pnpm --filter @whittlebrowser/engine typecheck
+
+      - name: Install the browser the tests drive
+        run: npx playwright-core install --with-deps chromium
+
+      - name: Test (unit, browser, MCP, canary leak tests, docs)
+        run: pnpm test
+
+      - name: Build the website
+        run: pnpm --filter @whittlebrowser/website build
+
+      # What npm publish would upload: catches a package with no dist/ or a missing file.
+      - name: Check the package contents
+        run: |
+          cd packages/engine
+          npm pack --dry-run 2>&1 | tee /tmp/pack.txt
+          grep -q "dist/mcp/cli.js" /tmp/pack.txt
+          grep -q "skills/whittlebrowser/SKILL.md" /tmp/pack.txt
