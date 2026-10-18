@@ -1,5 +1,9 @@
 # WhittleBrowser
 
+[![npm](https://img.shields.io/npm/v/@whittlebrowser/engine?label=npm&color=cb3837)](https://www.npmjs.com/package/@whittlebrowser/engine)
+[![CI](https://github.com/vasanth7781/whittlebrowser-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/vasanth7781/whittlebrowser-engine/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 An open-source engine that lets AI agents use a Chromium browser. Pages are shown to models as **compact,
 ref-stable, diffed text**, secrets and hidden prompt injections are **kept away from the LLM**, and sensitive
 sites and irreversible actions wait for a person. It runs as an MCP server and as a TypeScript library.
@@ -8,6 +12,8 @@ sites and irreversible actions wait for a person. It runs as an MCP server and a
   filter, detectors), a Playwright/CDP driver and an MCP server (`whittlebrowser`).
 - The WhittleBrowser desktop browser (per-site AI, X-ray, ghost cursor, built-in chat, Demo Studio) is developed in a separate repository and is not released yet. The engine here works on its own with any MCP client.
 - `website`: the animated landing page and docs site (`pnpm --filter @whittlebrowser/website dev`).
+
+**npm:** [`@whittlebrowser/engine`](https://www.npmjs.com/package/@whittlebrowser/engine) · **Docs:** [docs/](docs/) · **Issues:** [GitHub](https://github.com/vasanth7781/whittlebrowser-engine/issues)
 
 See [docs/COMPARISON.md](docs/COMPARISON.md) for how it compares, [docs/PROTOCOL.md](docs/PROTOCOL.md) for the format,
 and [docs/BENCHMARK.md](docs/BENCHMARK.md) for the numbers.
@@ -38,7 +44,22 @@ With a real model driving each tool (Claude Haiku and Sonnet through Claude Code
 
 Regenerate the charts after a new run with `pnpm --filter @whittlebrowser/engine bench:charts`.
 
-## Quick start
+## Install
+
+Needs Node 22 or newer, and either Google Chrome or a downloaded Chromium (`npx playwright-core install chromium`, once).
+The package is on npm: [`@whittlebrowser/engine`](https://www.npmjs.com/package/@whittlebrowser/engine).
+
+```bash
+claude mcp add whittlebrowser -- npx -y @whittlebrowser/engine     # Claude Code
+codex mcp add whittlebrowser -- npx -y @whittlebrowser/engine      # Codex
+```
+
+Server flags go after the package name, for example `… @whittlebrowser/engine --headless`. For Cursor, VS Code, Gemini CLI and
+other clients, put `"command": "npx", "args": ["-y", "@whittlebrowser/engine"]` in their MCP config. **Claude Desktop** needs full
+paths instead (it does not see a Node installed with nvm); see [docs/use-with-ai-tools.md](docs/use-with-ai-tools.md#claude-desktop).
+Optional: `npm i -g @whittlebrowser/engine` installs the `whittlebrowser` command.
+
+## Work on the engine (from source)
 
 ```bash
 git clone https://github.com/vasanth7781/whittlebrowser-engine.git && cd whittlebrowser-engine
@@ -50,7 +71,7 @@ pnpm test        # engine unit + browser + MCP tests (headless)
 pnpm bench       # benchmark (add -- --live --pw-mcp; run packages/engine/bench/compare/setup.sh once for browser-use + Stagehand)
 ```
 
-### Use it from Claude Code (or any MCP client)
+### Connect a source checkout to your tools
 
 ```bash
 pnpm connect          # adds the server to Claude Code, and prints the JSON for Cursor, VS Code and other clients

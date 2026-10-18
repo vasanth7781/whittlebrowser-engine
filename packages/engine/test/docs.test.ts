@@ -68,4 +68,15 @@ describe('docs', () => {
     expect(images.length).toBeGreaterThanOrEqual(4);
     for (const i of images) expect(existsSync(join(repo, i)), i).toBe(true);
   });
+
+  it('link to the npm package under its real name, and the changelog covers the current version', () => {
+    const repo = join(docs, '..');
+    const pkg = JSON.parse(readFileSync(join(repo, 'packages/engine/package.json'), 'utf8'));
+    const npmUrl = `https://www.npmjs.com/package/${pkg.name}`;
+    for (const f of ['README.md', 'docs/getting-started.md', 'docs/use-with-ai-tools.md', 'docs/introduction.md']) {
+      expect(readFileSync(join(repo, f), 'utf8'), `${f} should link to ${npmUrl}`).toContain(npmUrl);
+    }
+    expect(readFileSync(join(repo, 'packages/engine/README.md'), 'utf8')).toContain(`npx -y ${pkg.name}`);
+    expect(readFileSync(join(repo, 'CHANGELOG.md'), 'utf8')).toContain(`## ${pkg.version} (`);
+  });
 });
