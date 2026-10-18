@@ -40,18 +40,24 @@ Add `--scope user` to make it available in every project, or `--scope project` t
 
 ### Claude Desktop
 
-Edit `~/Library/Application Support/Claude/claude_desktop_config.json` and restart the app:
+```bash
+pnpm connect desktop        # from the repository root
+```
+
+This adds the server to `claude_desktop_config.json` (keeping your other servers and saving a `.bak` copy), then quit Claude Desktop with ⌘Q and open it again. By hand, edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
 ```json
 {
   "mcpServers": {
     "whittlebrowser": {
-      "command": "node",
+      "command": "/absolute/path/to/node",
       "args": ["/absolute/path/to/whittlebrowser/packages/engine/dist/mcp/cli.js"]
     }
   }
 }
 ```
+
+Use the full path to `node` (`which node` prints it). Apps opened from the Dock or Finder do not see a Node installed with nvm or Homebrew shell setup, and a bare `node` fails there with "spawn node ENOENT".
 
 ### Cursor
 

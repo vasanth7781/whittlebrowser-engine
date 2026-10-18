@@ -40,7 +40,8 @@ pnpm bench       # benchmark (add -- --live --pw-mcp; run packages/engine/bench/
 
 ```bash
 pnpm connect          # adds the server to Claude Code, and prints the JSON for Cursor, VS Code and other clients
-pnpm connect codex    # adds it to Codex instead (pnpm connect all does both)
+pnpm connect codex    # adds it to Codex instead
+pnpm connect desktop  # adds it to Claude Desktop (then quit and reopen the app); pnpm connect all does all three
 ```
 
 That runs `claude mcp add whittlebrowser -- node <this checkout>/packages/engine/dist/mcp/cli.js` (or `codex mcp add …`). Any extra arguments go to the
