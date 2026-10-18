@@ -5,7 +5,20 @@ isolated world), a serializer and differ that send models compact text and only 
 filter that keeps secrets and hidden prompt injections away from the model, a Playwright/CDP driver, and an
 MCP server (`whittlebrowser`).
 
-Run it from a clone of this repository (the npm package is not published yet):
+## Install
+
+Needs Node 22 or newer, and either Google Chrome or a downloaded Chromium (`npx playwright-core install chromium`, once).
+
+```bash
+claude mcp add whittlebrowser -- npx -y @whittlebrowser/engine     # Claude Code
+codex mcp add whittlebrowser -- npx -y @whittlebrowser/engine      # Codex
+```
+
+Server flags go after the package name (`--headless`, `--ephemeral`, `--budget 4000`; the full list is in the docs). For Cursor, VS Code,
+Gemini CLI and other clients, use `"command": "npx", "args": ["-y", "@whittlebrowser/engine"]`. Claude Desktop needs full paths; see
+the docs below. Source code, issues and docs: https://github.com/vasanth7781/whittlebrowser-engine
+
+## Work on it from source
 
 ```bash
 git clone https://github.com/vasanth7781/whittlebrowser-engine.git && cd whittlebrowser-engine
@@ -15,14 +28,13 @@ node packages/engine/dist/mcp/cli.js              # launch Chromium with a persi
 node packages/engine/dist/mcp/cli.js --headless   # headless
 ```
 
-Use it from Claude Code (or any MCP client). From the repository root, `pnpm connect` adds it to Claude Code and prints the config
-JSON for other clients. Or by hand, with the absolute path to that file:
+From a source checkout, `pnpm connect` adds your build to Claude Code and prints the config JSON for other clients. Or by hand, with the absolute path to that file:
 
 ```bash
 claude mcp add whittlebrowser -- node /absolute/path/to/packages/engine/dist/mcp/cli.js
 ```
 
-Setup for Claude, Cursor, Codex, VS Code and others: `docs/use-with-ai-tools.md`.
+Setup for Claude, Cursor, Codex, VS Code and others: [docs/use-with-ai-tools.md](https://github.com/vasanth7781/whittlebrowser-engine/blob/main/docs/use-with-ai-tools.md).
 
 ## Tools
 

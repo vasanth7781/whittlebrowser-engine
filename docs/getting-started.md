@@ -8,9 +8,20 @@ WhittleBrowser is an MCP server (and a TypeScript library) that lets an AI agent
 - Node.js 22 or newer
 - pnpm 10 (`npm i -g pnpm`)
 
-## Install from source
+## Install from npm
 
-The npm package is not published. Run it from a clone:
+The package is [`@whittlebrowser/engine`](https://www.npmjs.com/package/@whittlebrowser/engine) on npm. Connect it to your agent with one command:
+
+```bash
+claude mcp add whittlebrowser -- npx -y @whittlebrowser/engine     # Claude Code
+codex mcp add whittlebrowser -- npx -y @whittlebrowser/engine      # Codex
+```
+
+You also need Google Chrome, or a downloaded Chromium (`npx playwright-core install chromium`, once). For Claude Desktop, Cursor, VS Code and other clients, see [Use it with Claude, Cursor, Codex and other AI tools](use-with-ai-tools.html).
+
+## Install from source (to work on the engine)
+
+Run it from a clone:
 
 ```bash
 git clone https://github.com/vasanth7781/whittlebrowser-engine.git
@@ -20,7 +31,9 @@ pnpm --filter @whittlebrowser/engine build
 npx playwright-core install chromium    # downloads the browser it drives (once; skip it if Google Chrome is installed)
 ```
 
-## Connect an agent
+## Connect a source checkout
+
+From a clone, these commands register your build with a client:
 
 ```bash
 pnpm connect          # Claude Code

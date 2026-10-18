@@ -20,7 +20,7 @@
     <a href="#studio">Studio</a>
     <a href="#compare">Compare</a>
     <a href="#safety">Safety</a>
-    <a href="docs/">Docs</a>
+    <a href="docs/">Docs</a><a href="https://www.npmjs.com/package/@whittlebrowser/engine">npm</a><a href="https://github.com/vasanth7781/whittlebrowser-engine">GitHub</a>
   </nav>
   <a class="btn small" href="docs/getting-started.html">Get started</a>
 </header>
@@ -392,18 +392,16 @@
     <div class="tabs" role="tablist">
       <button class="on" data-qs="0">Claude Code</button><button data-qs="1">Headless / CI</button><button data-qs="2">Benchmark</button>
     </div>
-    <div class="code" data-qs-pane="0"><button class="copy">Copy</button><pre><span class="c"># install (from source, once)</span>
-git clone https://github.com/vasanth7781/whittlebrowser-engine.git && cd whittlebrowser-engine
-pnpm install && pnpm --filter @whittlebrowser/engine build
-npx playwright-core install chromium
+    <div class="code" data-qs-pane="0"><button class="copy">Copy</button><pre><span class="c"># connect Claude Code (once). Needs Node 22+ and Chrome</span>
+claude mcp add whittlebrowser -- npx -y @whittlebrowser/engine --show-cursor
 
-<span class="c"># connect Claude Code (once, from the repo root)</span>
-claude mcp add whittlebrowser -- node "$PWD/packages/engine/dist/mcp/cli.js" --show-cursor
+<span class="c"># or Codex</span>
+codex mcp add whittlebrowser -- npx -y @whittlebrowser/engine
 
 <span class="c"># then ask Claude:</span>
 <span class="s">"Use whittlebrowser to research the top 5 results and compare them."</span></pre></div>
     <div class="code" data-qs-pane="1" hidden><button class="copy">Copy</button><pre><span class="c"># no window, throwaway profile: for CI and servers</span>
-claude mcp add whittlebrowser -- node "$PWD/packages/engine/dist/mcp/cli.js" --headless --ephemeral</pre></div>
+claude mcp add whittlebrowser -- npx -y @whittlebrowser/engine --headless --ephemeral</pre></div>
     <div class="code" data-qs-pane="2" hidden><button class="copy">Copy</button><pre>pnpm test                        <span class="c"># unit, browser, MCP, canary leak tests</span>
 pnpm bench -- --live --pw-mcp    <span class="c"># tokens, leaks, injections vs Playwright MCP</span>
 pnpm bench:agent --smoke         <span class="c"># real-agent run through Claude Code (needs the claude CLI)</span></pre></div>
@@ -415,7 +413,7 @@ pnpm bench:agent --smoke         <span class="c"># real-agent run through Claude
   <div class="cols">
     <div><b>Docs</b><a href="docs/getting-started.html">Getting started</a><a href="docs/claude-code.html">Use with Claude Code</a><a href="docs/how-it-works.html">How it works</a><a href="docs/protocol.html">Protocol</a></div>
     <div><b>Features</b><a href="docs/xray-and-cursor.html">X-ray & cursor</a><a href="docs/research.html">Research mode</a><a href="docs/safety.html">Safety model</a><a href="docs/benchmark.html">Benchmark</a></div>
-    <div><b>More</b><a href="docs/comparison.html">Comparison</a><a href="docs/faq.html">FAQ</a></div>
+    <div><b>More</b><a href="docs/comparison.html">Comparison</a><a href="docs/faq.html">FAQ</a><a href="https://www.npmjs.com/package/@whittlebrowser/engine">npm package</a><a href="https://github.com/vasanth7781/whittlebrowser-engine">GitHub</a></div>
   </div>
 </footer>
 <script type="module" src="main.js"></script>

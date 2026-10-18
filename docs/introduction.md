@@ -12,7 +12,7 @@
 
 ## Where to next
 
-- [Getting started](getting-started.html): install and run it.
+- [Getting started](getting-started.html): install and run it. The package is [`@whittlebrowser/engine` on npm](https://www.npmjs.com/package/@whittlebrowser/engine).
 - [Use with Claude Code](claude-code.html) or [other AI tools](use-with-ai-tools.html): connect an agent in one command.
 - [How it works](how-it-works.html): the in-page agent, refs, serializer, diffs.
 - [Protocol](protocol.html): the exact view format and every tool.

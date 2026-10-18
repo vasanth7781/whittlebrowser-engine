@@ -6,7 +6,16 @@ to use it cheaply.
 
 ## 1. Install
 
-The npm package is not published yet. Until it is, run it from source:
+**From npm (recommended).** The package is [`@whittlebrowser/engine`](https://www.npmjs.com/package/@whittlebrowser/engine). Terminal tools start it with `npx`:
+
+```bash
+claude mcp add whittlebrowser -- npx -y @whittlebrowser/engine
+codex mcp add whittlebrowser -- npx -y @whittlebrowser/engine
+```
+
+You also need Google Chrome, or a downloaded Chromium (`npx playwright-core install chromium`, once). For editors and apps, the equivalent config is `"command": "npx", "args": ["-y", "@whittlebrowser/engine"]`, with any server flags added after the package name. **Claude Desktop is the exception**: see its section below.
+
+**From source** (to work on the engine):
 
 ```bash
 git clone https://github.com/vasanth7781/whittlebrowser-engine.git && cd whittlebrowser-engine
@@ -26,7 +35,7 @@ Add flags after the path, for example `--headless` (no window), `--ephemeral` (t
 
 ## 2. Connect your tool
 
-Replace `/absolute/path/to/whittlebrowser` below with where you cloned it. Tools change their config formats from time to time; if a setting is not found, check that tool's MCP docs.
+The examples below use a source checkout. With the npm package, replace the `node` command and its path argument with `"command": "npx", "args": ["-y", "@whittlebrowser/engine"]` (Claude Desktop excepted). Tools change their config formats from time to time; if a setting is not found, check that tool's MCP docs.
 
 ### Claude Code
 
@@ -58,6 +67,15 @@ This adds the server to `claude_desktop_config.json` (keeping your other servers
 ```
 
 Use the full path to `node` (`which node` prints it). Apps opened from the Dock or Finder do not see a Node installed with nvm or Homebrew shell setup, and a bare `node` fails there with "spawn node ENOENT".
+
+**With the npm package**, `npx` and the installed `whittlebrowser` command both fail in Claude Desktop for the same reason (they start with `#!/usr/bin/env node`). Install it globally and point Desktop at the full path of `node` and of the installed file. This prints the config to paste:
+
+```bash
+npm i -g @whittlebrowser/engine
+node -e "const p=require('path'),cli=p.join(require('child_process').execSync('npm root -g').toString().trim(),'@whittlebrowser/engine/dist/mcp/cli.js');console.log(JSON.stringify({mcpServers:{whittlebrowser:{command:process.execPath,args:[cli]}}},null,2))"
+```
+
+After updating the package (`npm i -g @whittlebrowser/engine@latest`), restart Claude Desktop.
 
 ### Cursor
 
