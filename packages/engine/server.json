@@ -1,0 +1,21 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.vasanth7781/whittlebrowser-engine",
+  "description": "Browser MCP server: compact page text with stable refs and diffs, secrets kept from the model.",
+  "repository": {
+    "url": "https://github.com/vasanth7781/whittlebrowser-engine",
+    "source": "github",
+    "subfolder": "packages/engine"
+  },
+  "version": "0.1.1",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@whittlebrowser/engine",
+      "version": "0.1.1",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}

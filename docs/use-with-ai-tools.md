@@ -68,11 +68,11 @@ This adds the server to `claude_desktop_config.json` (keeping your other servers
 
 Use the full path to `node` (`which node` prints it). Apps opened from the Dock or Finder do not see a Node installed with nvm or Homebrew shell setup, and a bare `node` fails there with "spawn node ENOENT".
 
-**With the npm package**, `npx` and the installed `whittlebrowser` command both fail in Claude Desktop for the same reason (they start with `#!/usr/bin/env node`). Install it globally and point Desktop at the full path of `node` and of the installed file. This prints the config to paste:
+**With the npm package**, `npx` and the installed `whittlebrowser` command both fail in Claude Desktop for the same reason (they start with `#!/usr/bin/env node`). Install it globally and point Desktop at the full path of `node` and of the installed file. This prints the config to paste into `claude_desktop_config.json`:
 
 ```bash
 npm i -g @whittlebrowser/engine
-node -e "const p=require('path'),cli=p.join(require('child_process').execSync('npm root -g').toString().trim(),'@whittlebrowser/engine/dist/mcp/cli.js');console.log(JSON.stringify({mcpServers:{whittlebrowser:{command:process.execPath,args:[cli]}}},null,2))"
+whittlebrowser print-config
 ```
 
 After updating the package (`npm i -g @whittlebrowser/engine@latest`), restart Claude Desktop.
@@ -190,7 +190,7 @@ Connecting the server gives the model the tools. A **skill** (or a short rules f
 
 | Where | How |
 |---|---|
-| Claude Code | `pnpm connect skill` (copies it to `~/.claude/skills/whittlebrowser/`), or copy that folder to `.claude/skills/` in a project to share it with your team |
+| Claude Code | `npx -y @whittlebrowser/engine install-skill` (copies it to `~/.claude/skills/whittlebrowser/`), or `pnpm connect skill` from a clone. To share it with your team, copy the folder to `.claude/skills/` in a project |
 | Claude Desktop and claude.ai | Zip the folder, keeping the folder itself inside the zip: `cd packages/engine/skills && zip -r whittlebrowser-skill.zip whittlebrowser`, then upload it under Skills in Claude's settings (Settings, Capabilities) and switch it on |
 | Codex, Cursor, Gemini CLI, VS Code and others | Paste the rules below into `AGENTS.md`, `GEMINI.md` or a Cursor rule (`.cursor/rules/whittlebrowser.mdc`) |
 

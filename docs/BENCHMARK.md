@@ -47,6 +47,8 @@ Terms used below:
 - 5 local test pages: a shipping form, a React-style to-do app that re-renders, a catalog with 30 product cards and a 120-row table, a 40-paragraph article, and a page with prompt-injection text.
 - 6 live sites: Wikipedia (Pancake), Hacker News, a GitHub repository, MDN `<input>`, BBC News, Python asyncio docs.
 
+**A note on Playwright MCP's numbers.** After a tab's first page, Playwright numbers each element ref with a navigation prefix (`f1e2`, `f2e2`, ...), which makes its snapshots longer. We measure the pages in order in one tab, as an agent uses a tab, so the Playwright figures include that prefix. On a freshly opened page they are about 13% lower: the product catalog page is 10,106 tokens in the benchmark and 8,758 fresh, against 672 and 661 for WhittleBrowser. The gap on that page is about 13 to 15 times either way.
+
 **Each tool's own code, no re-implementation:**
 
 | Tool | What we capture | How |
