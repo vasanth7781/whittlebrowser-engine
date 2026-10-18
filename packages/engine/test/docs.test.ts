@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
+// @ts-expect-error plain .mjs script with no type declarations
+import { build as buildCharts } from '../bench/charts.mjs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -53,5 +55,17 @@ describe('docs', () => {
     const out = execFileSync('node', [join(repo, 'scripts/connect.mjs'), 'codex', '--print', '--headless'], { encoding: 'utf8' });
     const args = JSON.parse(out.slice(out.indexOf('{'))).mcpServers.whittlebrowser.args;
     expect(args.slice(1)).toEqual(['--headless']);
+  });
+
+  it('keep the README charts in sync with the results, and every image the README names exists', () => {
+    const repo = join(docs, '..');
+    const charts = buildCharts() as Record<string, string>;
+    for (const [name, svg] of Object.entries(charts)) {
+      expect(readFileSync(join(docs, 'img', name), 'utf8'), `${name} is out of date: run pnpm --filter @whittlebrowser/engine bench:charts`).toBe(svg);
+    }
+    const readme = readFileSync(join(repo, 'README.md'), 'utf8');
+    const images = [...readme.matchAll(/(?:src|srcset)="(docs\/img\/[^"]+)"/g)].map((m) => m[1]);
+    expect(images.length).toBeGreaterThanOrEqual(4);
+    for (const i of images) expect(existsSync(join(repo, i)), i).toBe(true);
   });
 });

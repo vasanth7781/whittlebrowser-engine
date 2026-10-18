@@ -16,6 +16,11 @@ and [docs/BENCHMARK.md](docs/BENCHMARK.md) for the numbers.
 
 Same 11 pages (5 test pages + 6 live sites), same Chromium, each tool's own code, o200k tokens, no LLM calls. Full methodology and charts are in [docs/BENCHMARK.md](docs/BENCHMARK.md).
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/benchmark-pages-dark.svg">
+  <img alt="Bar chart of tokens to look at 11 pages: WhittleBrowser 23.7k, Playwright MCP 342k, browser-use 167k, Stagehand 180k" src="docs/img/benchmark-pages-light.svg">
+</picture>
+
 | | Playwright MCP | browser-use | Stagehand | **WhittleBrowser** |
 |---|---:|---:|---:|---:|
 | page text, 11 pages | 300,898 | 29,836 (+ screenshots) | 172,176 | **13,282** |
@@ -23,6 +28,15 @@ Same 11 pages (5 test pages + 6 live sites), same Chromium, each tool's own code
 | WhittleBrowser uses | 93% fewer | 86% fewer | 87% fewer | |
 | planted secrets reaching the model | 7 / 7 | 6 / 7 | 6 / 7 | **0 / 7** |
 | hidden prompt injections reaching the model | 5 / 5 | 3 / 5 | 4 / 5 | **0 / 5** |
+
+With a real model driving each tool (Claude Haiku and Sonnet through Claude Code, 7 tasks, 3 repetitions each), the saving on whole tasks is smaller and depends on the task: large or re-rendering pages save the most, small pages save little. Every tool finished most tasks; the numbers after the dot are tasks passed.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/benchmark-agent-dark.svg">
+  <img alt="Bar chart of mean tokens per finished task for Claude Haiku and Sonnet: WhittleBrowser 28.2k and 19.9k, Playwright MCP 53.4k and 28.9k, browser-use 87.4k and 36.0k, Stagehand 27.2k and 25.0k" src="docs/img/benchmark-agent-light.svg">
+</picture>
+
+Regenerate the charts after a new run with `pnpm --filter @whittlebrowser/engine bench:charts`.
 
 ## Quick start
 

@@ -25,6 +25,7 @@
     "test": "vitest run",
     "bench": "tsx bench/run.ts",
     "bench:agent": "tsx bench/agent/run.ts",
+    "bench:charts": "node bench/charts.mjs",
     "mcp": "tsx src/mcp/cli.ts"
   },
   "dependencies": {
