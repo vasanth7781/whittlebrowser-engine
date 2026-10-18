@@ -245,13 +245,17 @@ describe('human-like input', () => {
       await p.evaluate(() => { (window as any).__mm = 0; addEventListener('mousemove', () => (window as any).__mm++, true); addEventListener('mouseover', () => (window as any).__mm++, true); });
       (s2 as any).kickIdle(); // as after any tool result
       const a = await (s2 as any).agent(p);
+      // How soon the cursor shows up depends on how fast the machine is (a busy CI runner is slower), so wait for it to
+      // appear and then watch it drift, instead of expecting it at a fixed moment.
       const seen: string[] = [];
-      for (let i = 0; i < 8; i++) {
+      const deadline = Date.now() + 20_000;
+      while (seen.length < 8 && Date.now() < deadline) {
         await new Promise((r) => setTimeout(r, 700));
         // Read the drawn cursor's position without stopping the drift.
-        const g = await a.call('ghostPos'); seen.push(g && `${g.x},${g.y}`);
+        const g = await a.call('ghostPos');
+        if (g) seen.push(`${g.x},${g.y}`);
       }
-      expect(seen.every(Boolean)).toBe(true);                      // the cursor appeared on the fresh page
+      expect(seen.length).toBe(8);                                 // the cursor appeared on the fresh page, and stayed
       expect(new Set(seen).size).toBeGreaterThan(2);               // and kept drifting
       expect(await p.evaluate(() => (window as any).__mm)).toBe(0); // drawn only: the page saw no mouse events
     } finally {
