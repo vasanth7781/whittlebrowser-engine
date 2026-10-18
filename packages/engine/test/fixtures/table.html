@@ -1,0 +1,53 @@
+<!doctype html><html><head>
+<style data-theme>
+:root{--bg:#f6f4ef;--card:#fff;--ink:#141414;--mute:#67645e;--line:#e5e1d9;--brand:#0a7d5a;--brand2:#075c42;--soft:#e7f2ec;--ok:#0a7d5a;--warn:#b42318}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--brand)}
+body>header,body>nav{display:flex;align-items:center;gap:6px;height:58px;padding:0 max(24px,calc((100% - 860px)/2));background:#fff;border-bottom:1px solid var(--line)}
+body>header::before,body>nav::before{content:"";width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#34c79a,#0a7d5a);margin-right:10px;flex:none}
+body>header nav{display:flex;gap:4px}
+body>header a,body>nav a{padding:6px 12px;border-radius:8px;color:var(--mute);text-decoration:none;font-weight:500}
+body>header a:hover,body>nav a:hover{background:var(--soft);color:var(--brand)}
+main{max-width:860px;margin:30px auto 48px;padding:0 24px}
+h1{margin:0 0 6px;font-size:30px;line-height:1.2;font-weight:700;letter-spacing:-.02em}
+h2{margin:26px 0 8px;font-size:21px;letter-spacing:-.01em}
+h3{margin:0;font-size:17px}
+p{margin:0 0 12px}
+footer{max-width:860px;margin:0 auto;padding:0 24px 32px;color:var(--mute);font-size:13px}
+footer a{color:var(--mute)}
+button{height:42px;padding:0 20px;border:0;border-radius:10px;background:var(--brand);color:#fff;font-weight:600;font-size:14px;line-height:1;font-family:inherit;cursor:pointer}
+button:hover{background:var(--brand2)}
+input:not([type=checkbox]):not([type=radio]),select,textarea{width:100%;height:42px;padding:0 12px;border:1px solid #d6d1c6;border-radius:10px;background:#fff;color:var(--ink);font:inherit;outline:none}
+input:focus,select:focus{border-color:var(--brand);box-shadow:0 0 0 3px #cfe8dc}
+select{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%2367645e' stroke-width='2'%3E%3Cpath d='M1 1l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 14px center}
+input[type=radio],input[type=checkbox]{accent-color:var(--brand)}
+code{font:13px ui-monospace,Menlo,monospace;background:#f3f1ec;border:1px solid var(--line);border-radius:6px;padding:1px 6px}
+h1{margin-bottom:16px}
+#cards{list-style:none;margin:0 0 28px;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.card{display:flex;flex-direction:column;gap:6px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px}
+.card::before{content:"";height:74px;border-radius:10px;background:linear-gradient(135deg,#e3f1ea,#c2e0d1 60%,#9fcfb5)}
+.card a{text-decoration:none;color:var(--ink)}.card h3{font-size:15px}
+.price{font-weight:700}.rating{font-size:12.5px;color:#a8670b}
+.card button{height:34px;font-size:13px;margin-top:2px}
+#t{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:14px}
+#t caption{text-align:left;font-weight:700;font-size:18px;padding:0 0 10px}
+#t th{background:#f7f5f0;color:var(--mute);text-align:left;font-weight:600;font-size:12.5px;letter-spacing:.03em;text-transform:uppercase}
+#t th,#t td{padding:10px 14px;border-bottom:1px solid var(--line)}#t tbody tr:nth-child(even) td{background:#faf8f4}
+</style>
+
+
+
+<title>Products</title></head><body><main>
+<h1>Catalog</h1>
+<section aria-label="Results"><ul id="cards"></ul></section>
+<table id="t"><caption>Price list</caption><thead><tr><th>SKU</th><th>Name</th><th>Price</th></tr></thead><tbody></tbody></table>
+<article><h2>About pancakes</h2></article>
+</main>
+<script>
+const ul = document.getElementById('cards');
+for (let i = 1; i <= 30; i++) ul.insertAdjacentHTML('beforeend', `<li class="card"><a href="/p/${i}"><h3>Widget ${i}</h3></a><span class="price">$${(i * 1.5).toFixed(2)}</span><span class="rating">${(3 + (i % 3)).toFixed(1)} stars</span><button>Add to cart</button></li>`);
+const tb = document.querySelector('#t tbody');
+for (let i = 1; i <= 120; i++) tb.insertAdjacentHTML('beforeend', `<tr><td>SKU-${1000 + i}</td><td>Item ${i}</td><td>$${i}.00</td></tr>`);
+</script></body></html>

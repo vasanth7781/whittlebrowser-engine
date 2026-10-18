@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "whittlebrowser": {
+      "command": "node",
+      "args": ["packages/engine/dist/mcp/cli.js"]
+    }
+  }
+}

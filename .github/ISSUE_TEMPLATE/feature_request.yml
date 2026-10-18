@@ -1,0 +1,16 @@
+name: Feature request
+description: Suggest something the engine should do.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to do?
+      description: The task or the page type that is hard today.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would help
+      description: A tool, a flag, a change to the view format, or a doc. Mention token cost if it matters.

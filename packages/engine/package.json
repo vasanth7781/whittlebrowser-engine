@@ -1,0 +1,50 @@
+{
+  "name": "@whittlebrowser/engine",
+  "version": "0.1.0",
+  "description": "Token-lean, ref-stable, privacy-first browser protocol for AI agents (core + Playwright/CDP driver + MCP server).",
+  "license": "MIT",
+  "author": "Vasanth (https://github.com/vasanth7781)",
+  "homepage": "https://github.com/vasanth7781/whittlebrowser-engine#readme",
+  "repository": { "type": "git", "url": "git+https://github.com/vasanth7781/whittlebrowser-engine.git", "directory": "packages/engine" },
+  "bugs": { "url": "https://github.com/vasanth7781/whittlebrowser-engine/issues" },
+  "engines": { "node": ">=22" },
+  "keywords": ["mcp", "mcp-server", "model-context-protocol", "browser", "browser-automation", "ai-agents", "claude", "codex", "cdp", "playwright", "prompt-injection", "token-efficient"],
+  "files": ["dist", "skills", "README.md", "LICENSE"],
+  "publishConfig": { "access": "public" },
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./core": "./dist/core/index.js",
+    "./page": "./dist/page/agent.js",
+    "./humanpath": "./dist/core/humanpath.js",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "whittlebrowser": "dist/mcp/cli.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepack": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\" && npm run build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "bench": "tsx bench/run.ts",
+    "bench:agent": "tsx bench/agent/run.ts",
+    "bench:charts": "node bench/charts.mjs",
+    "mcp": "tsx src/mcp/cli.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "playwright-core": "1.64.1",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "js-tiktoken": "^1.0.21",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.7",
+    "yaml": "^2.9.1"
+  }
+}

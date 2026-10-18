@@ -1,0 +1,39 @@
+<!doctype html><html><head><title>Todos</title>
+<style>#modal{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center}#modal.open{display:flex}#modal div{background:#fff;padding:20px}</style></head>
+<body><main>
+<h1>Todos</h1>
+<div id="app"></div>
+<button id="more">Load more</button>
+<button id="covered">Covered action</button>
+<button id="openmodal">Open modal</button>
+<div id="modal" role="dialog" aria-label="Cookies"><div><p>We use cookies.</p><button id="accept">Accept</button></div></div>
+</main>
+<script>
+let items = Array.from({length: 40}, (_, i) => ({id: i, text: 'Task number ' + (i + 1), done: false}));
+let renders = 0;
+function render() {
+  renders++;
+  const app = document.getElementById('app');
+  app.innerHTML = '';                       // throw away every node, like a naive framework re-render
+  const counter = document.createElement('p'); counter.textContent = 'Renders: ' + renders; app.appendChild(counter);
+  const rerender = document.createElement('button'); rerender.textContent = 'Re-render'; rerender.onclick = render; app.appendChild(rerender);
+  const ul = document.createElement('ul');
+  for (const it of items) {
+    const li = document.createElement('li');
+    const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = it.done; cb.setAttribute('aria-label', it.text);
+    cb.onchange = () => { it.done = cb.checked; render(); };
+    const span = document.createElement('span'); span.textContent = it.text;
+    const del = document.createElement('button'); del.textContent = 'Remove'; del.onclick = () => { items = items.filter(x => x !== it); render(); };
+    li.append(cb, span, del); ul.appendChild(li);
+  }
+  app.appendChild(ul);
+}
+render();
+document.getElementById('more').onclick = () => { const n = items.length; for (let i = 0; i < 5; i++) items.push({id: n + i, text: 'Task number ' + (n + i + 1), done: false}); setTimeout(render, 150); };
+document.getElementById('openmodal').onclick = () => document.getElementById('modal').classList.add('open');
+document.getElementById('accept').onclick = () => document.getElementById('modal').classList.remove('open');
+document.getElementById('covered').onclick = () => { document.title = 'covered-clicked'; };
+// Page tries to tamper with DOM APIs; the isolated-world agent must not be affected.
+Element.prototype.getBoundingClientRect = function () { return {x:0,y:0,width:0,height:0,top:0,left:0,right:0,bottom:0}; };
+window.getComputedStyle = function () { return {display:'none'}; };
+</script></body></html>

@@ -1,0 +1,40 @@
+name: Bug report
+description: Something does not work, or a page is read or acted on wrongly.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. **Do not paste secrets, cookies or private page content.** If a secret or hidden instruction
+        reached the model, report it privately instead (see SECURITY.md).
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what you got.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: How to reproduce
+      description: A public URL, or a minimal HTML page, and the tool calls. The output of `observe` for that page helps most.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: The engine version or the commit you built (`git rev-parse --short HEAD`).
+    validations:
+      required: true
+  - type: input
+    id: client
+    attributes:
+      label: MCP client
+      description: For example Claude Code, Claude Desktop, Codex, Cursor, or your own code.
+  - type: input
+    id: env
+    attributes:
+      label: Operating system and Node version
+      placeholder: macOS 15, Node 22.12

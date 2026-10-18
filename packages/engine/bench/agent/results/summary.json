@@ -1,0 +1,159 @@
+{
+  "models": {
+    "haiku": {
+      "whittle": {
+        "runs": 21,
+        "passed": 21,
+        "tokens": 28161.333333333332,
+        "toolCalls": 5.761904761904762,
+        "turns": 6.761904761904762,
+        "costUsd": 0.0018196457142857143,
+        "openaiUsd": 0.0012869361904761904,
+        "seconds": 12.638619047619049
+      },
+      "whittle-before": {
+        "runs": 21,
+        "passed": 21,
+        "tokens": 39042.76190476191,
+        "toolCalls": 6.809523809523809,
+        "turns": 7.809523809523809,
+        "costUsd": 0.0021251152380952383,
+        "openaiUsd": 0.001485710476190476,
+        "seconds": 14.585142857142857
+      },
+      "playwright": {
+        "runs": 21,
+        "passed": 21,
+        "tokens": 53370.95238095238,
+        "toolCalls": 6.142857142857143,
+        "turns": 7.142857142857143,
+        "costUsd": 0.002179742857142858,
+        "openaiUsd": 0.001574704761904762,
+        "seconds": 15.78957142857143
+      },
+      "browser-use": {
+        "runs": 21,
+        "passed": 20,
+        "tokens": 87350.52380952382,
+        "toolCalls": 11.333333333333334,
+        "turns": 12.333333333333334,
+        "costUsd": 0.004739718571428572,
+        "openaiUsd": 0.0031372566666666665,
+        "seconds": 36.48847619047619
+      },
+      "stagehand": {
+        "runs": 21,
+        "passed": 18,
+        "tokens": 27207.52380952381,
+        "toolCalls": 5.809523809523809,
+        "turns": 6.809523809523809,
+        "costUsd": 0.002433539523809524,
+        "openaiUsd": 0.0015424633333333336,
+        "seconds": 14.847666666666665
+      }
+    },
+    "sonnet": {
+      "whittle": {
+        "runs": 21,
+        "passed": 21,
+        "tokens": 19942.571428571428,
+        "toolCalls": 4.142857142857143,
+        "turns": 5.142857142857143,
+        "costUsd": 0.02067591428571429,
+        "openaiUsd": 0.015928580952380953,
+        "seconds": 16.248333333333335
+      },
+      "whittle-before": {
+        "runs": 21,
+        "passed": 21,
+        "tokens": 33817.333333333336,
+        "toolCalls": 5.9523809523809526,
+        "turns": 6.9523809523809526,
+        "costUsd": 0.030909757142857142,
+        "openaiUsd": 0.022015280952380954,
+        "seconds": 22.33347619047619
+      },
+      "playwright": {
+        "runs": 21,
+        "passed": 18,
+        "tokens": 28890.285714285714,
+        "toolCalls": 3.9047619047619047,
+        "turns": 4.857142857142857,
+        "costUsd": 0.016931438095238092,
+        "openaiUsd": 0.014637947619047617,
+        "seconds": 38.11323809523809
+      },
+      "browser-use": {
+        "runs": 21,
+        "passed": 21,
+        "tokens": 36022.380952380954,
+        "toolCalls": 7.190476190476191,
+        "turns": 8.19047619047619,
+        "costUsd": 0.04765868095238097,
+        "openaiUsd": 0.030862919047619047,
+        "seconds": 28.107904761904763
+      },
+      "stagehand": {
+        "runs": 21,
+        "passed": 21,
+        "tokens": 25005.14285714286,
+        "toolCalls": 6.238095238095238,
+        "turns": 7.238095238095238,
+        "costUsd": 0.03693142857142858,
+        "openaiUsd": 0.025505999999999997,
+        "seconds": 23.578238095238095
+      }
+    }
+  },
+  "tasks": {
+    "table": {
+      "whittle": "6/6 · 24,637",
+      "whittle-before": "6/6 · 25,182",
+      "playwright": "5/6 · 20,921",
+      "browser-use": "6/6 · 26,566",
+      "stagehand": "6/6 · 14,899"
+    },
+    "form": {
+      "whittle": "6/6 · 19,600",
+      "whittle-before": "6/6 · 19,641",
+      "playwright": "6/6 · 46,132",
+      "browser-use": "6/6 · 147,439",
+      "stagehand": "6/6 · 17,770"
+    },
+    "article": {
+      "whittle": "6/6 · 12,975",
+      "whittle-before": "6/6 · 11,386",
+      "playwright": "6/6 · 24,716",
+      "browser-use": "6/6 · 13,846",
+      "stagehand": "6/6 · 9,702"
+    },
+    "spa": {
+      "whittle": "6/6 · 22,869",
+      "whittle-before": "6/6 · 27,377",
+      "playwright": "4/6 · 97,069",
+      "browser-use": "6/6 · 105,754",
+      "stagehand": "6/6 · 24,450"
+    },
+    "books-cheapest": {
+      "whittle": "6/6 · 30,306",
+      "whittle-before": "6/6 · 23,907",
+      "playwright": "6/6 · 27,192",
+      "browser-use": "6/6 · 33,342",
+      "stagehand": "6/6 · 26,051"
+    },
+    "books-five-star": {
+      "whittle": "6/6 · 39,195",
+      "whittle-before": "6/6 · 127,869",
+      "playwright": "6/6 · 31,966",
+      "browser-use": "6/6 · 54,004",
+      "stagehand": "3/6 · 73,337"
+    },
+    "quotes-login": {
+      "whittle": "6/6 · 18,781",
+      "whittle-before": "6/6 · 19,649",
+      "playwright": "6/6 · 39,919",
+      "browser-use": "5/6 · 50,854",
+      "stagehand": "6/6 · 16,537"
+    }
+  }
+}

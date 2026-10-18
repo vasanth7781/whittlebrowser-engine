@@ -1,0 +1,10 @@
+<!doctype html><html><head><title>Books</title>
+<style>.star-rating{display:block;height:16px;width:80px;background:#fc0}.star-rating.Five{width:80px}.star-rating.Two{width:32px}</style></head><body><main>
+<h1>Mystery</h1>
+<ol id="list"></ol>
+</main>
+<script>
+const r = ['Five', 'Two', 'Five', 'One', 'Four', 'Five'];
+const ol = document.getElementById('list');
+r.forEach((w, i) => ol.insertAdjacentHTML('beforeend', `<li><article><h3><a href="/book/${i}">Book ${i + 1}</a></h3><p class="star-rating ${w}"><i class="icon-star"></i><i class="icon-star"></i></p><p class="price">£${10 + i}.00</p></article></li>`));
+</script></body></html>
