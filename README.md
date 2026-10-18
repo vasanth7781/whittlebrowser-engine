@@ -57,7 +57,7 @@ codex mcp add whittlebrowser -- npx -y @whittlebrowser/engine      # Codex
 Server flags go after the package name, for example `… @whittlebrowser/engine --headless`. For Cursor, VS Code, Gemini CLI and
 other clients, put `"command": "npx", "args": ["-y", "@whittlebrowser/engine"]` in their MCP config. **Claude Desktop** needs full
 paths instead (it does not see a Node installed with nvm); see [docs/use-with-ai-tools.md](docs/use-with-ai-tools.md#claude-desktop).
-Optional: `npm i -g @whittlebrowser/engine` installs the `whittlebrowser` command.
+Optional: `npm i -g @whittlebrowser/engine` installs the `whittlebrowser` command, and `npx -y @whittlebrowser/engine install-skill` installs the Claude skill that teaches a model to use the tools well.
 
 ## Work on the engine (from source)
 

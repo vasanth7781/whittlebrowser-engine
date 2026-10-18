@@ -1,6 +1,7 @@
 {
   "name": "@whittlebrowser/engine",
-  "version": "0.1.0",
+  "version": "0.1.1",
+  "mcpName": "io.github.vasanth7781/whittlebrowser-engine",
   "description": "Token-lean, ref-stable, privacy-first browser protocol for AI agents (core + Playwright/CDP driver + MCP server).",
   "license": "MIT",
   "author": "Vasanth (https://github.com/vasanth7781)",
