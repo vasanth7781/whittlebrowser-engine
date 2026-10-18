@@ -3,10 +3,11 @@
 //   pnpm connect                 add the server to Claude Code, and print the JSON for other clients
 //   pnpm connect codex           add it to Codex instead
 //   pnpm connect desktop         add it to Claude Desktop (edits its config file, keeps a backup; restart the app after)
-//   pnpm connect all             all three
+//   pnpm connect skill           install the WhittleBrowser skill for Claude Code (teaches the model how to use the tools)
+//   pnpm connect all             all of the above
 //   pnpm connect --print         only print, change nothing
 //   pnpm connect --headless      any other arguments go to the server (--headless, --ephemeral, --budget 4000 ...)
-import { existsSync, mkdirSync, readFileSync, writeFileSync, copyFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync, copyFileSync, cpSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { homedir } from 'node:os';
 import { spawnSync } from 'node:child_process';
@@ -16,7 +17,7 @@ if (!existsSync(cli)) {
   console.error('The engine is not built yet. Run:  pnpm --filter @whittlebrowser/engine build');
   process.exit(1);
 }
-const TARGETS = ['claude', 'codex', 'desktop', 'all'];
+const TARGETS = ['claude', 'codex', 'desktop', 'skill', 'all'];
 const args = process.argv.slice(2);
 const printOnly = args.includes('--print');
 const target = args.find((a) => TARGETS.includes(a)) ?? 'claude';
@@ -50,12 +51,21 @@ function addToDesktop() {
   return true;
 }
 
-const clients = target === 'all' ? ['claude', 'codex', 'desktop'] : [target];
+function installSkill() {
+  const from = resolve(import.meta.dirname, '../packages/engine/skills/whittlebrowser');
+  const to = join(process.env.CLAUDE_SKILLS_DIR || join(homedir(), '.claude/skills'), 'whittlebrowser');
+  mkdirSync(dirname(to), { recursive: true });
+  cpSync(from, to, { recursive: true });
+  console.log(`Installed the whittlebrowser skill to ${to}. Claude Code picks it up in new sessions.`);
+  return true;
+}
+
+const clients = target === 'all' ? ['claude', 'codex', 'desktop', 'skill'] : [target];
 let failed = false;
 if (!printOnly) {
   for (const c of clients) {
-    if (c === 'desktop') {
-      if (!addToDesktop()) failed = true;
+    if (c === 'desktop' || c === 'skill') {
+      if (!(c === 'desktop' ? addToDesktop() : installSkill())) failed = true;
       continue;
     }
     const r = spawnSync(c, ['mcp', 'add', 'whittlebrowser', '--', 'node', cli, ...extra], { stdio: 'inherit' });
