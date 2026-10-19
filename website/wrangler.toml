@@ -1,0 +1,11 @@
+# Cloudflare Pages settings for the website. The site is deployed by .github/workflows/deploy-site.yml.
+# Settings in this file take over from the dashboard, so keep bindings here.
+name = "whittlebrowser"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-10-01"
+
+# Waitlist signups (functions/api/waitlist.js reads env.DB). The table is defined in schema.sql.
+[[d1_databases]]
+binding = "DB"
+database_name = "whittlebrowser-waitlist"
+database_id = "8196ace1-c7b4-4ade-b235-8056e68df3aa"
