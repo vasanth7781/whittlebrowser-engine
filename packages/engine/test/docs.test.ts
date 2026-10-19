@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
+import { parse } from 'yaml';
 // @ts-expect-error plain .mjs script with no type declarations
 import { build as buildCharts } from '../bench/charts.mjs';
 import { join, dirname } from 'node:path';
@@ -78,5 +79,21 @@ describe('docs', () => {
     }
     expect(readFileSync(join(repo, 'packages/engine/README.md'), 'utf8')).toContain(`npx -y ${pkg.name}`);
     expect(readFileSync(join(repo, 'CHANGELOG.md'), 'utf8')).toContain(`## ${pkg.version} (`);
+  });
+
+  it('deploy the site on website or docs changes only, to the Pages project the config names', () => {
+    const repo = join(docs, '..');
+    const wf = parse(readFileSync(join(repo, '.github/workflows/deploy-site.yml'), 'utf8'));
+    expect(wf.on.push.branches).toEqual(['main']);
+    expect(wf.on.push.paths).toEqual(expect.arrayContaining(['website/**', 'docs/**']));
+    expect(wf.on.push.paths.some((p: string) => p.startsWith('packages/') || p === '**')).toBe(false); // engine-only changes do not redeploy the site
+    expect(wf.on).toHaveProperty('workflow_dispatch');
+    const toml = readFileSync(join(repo, 'website/wrangler.toml'), 'utf8');
+    const name = toml.match(/^name = "([^"]+)"/m)![1];
+    const out = toml.match(/^pages_build_output_dir = "([^"]+)"/m)![1];
+    const deploy = wf.jobs.deploy.steps.find((st: { name?: string }) => st.name === 'Deploy to Cloudflare Pages');
+    expect(deploy.with.command).toContain(`pages deploy ${out} --project-name=${name}`);
+    expect(deploy.with.workingDirectory).toBe('website');
+    expect(toml).toMatch(/binding = "DB"/);       // functions/api/waitlist.js reads env.DB
   });
 });
