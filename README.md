@@ -11,7 +11,7 @@ sites and irreversible actions wait for a person. It runs as an MCP server and a
 - `packages/engine`: the protocol (in-page agent in a CDP isolated world, serializer, differ, privacy
   filter, detectors), a Playwright/CDP driver and an MCP server (`whittlebrowser`).
 - The WhittleBrowser desktop browser (per-site AI, X-ray, ghost cursor, built-in chat, Demo Studio) is developed in a separate repository and is not released yet. The engine here works on its own with any MCP client.
-- `website`: the animated landing page and docs site (`pnpm --filter @whittlebrowser/website dev`).
+- `website`: the landing page, the Cloud waitlist, the Mac app "coming soon" page and the docs site (`pnpm --filter @whittlebrowser/website dev`; deploy notes in [website/DEPLOY.md](website/DEPLOY.md)).
 
 **npm:** [`@whittlebrowser/engine`](https://www.npmjs.com/package/@whittlebrowser/engine) · **Docs:** [docs/](docs/) · **Issues:** [GitHub](https://github.com/vasanth7781/whittlebrowser-engine/issues)
 
@@ -132,7 +132,7 @@ packages/engine/src/core/             serializer, diff, privacy, detector, injec
 packages/engine/src/driver/           session (observe/act/find/extract/...), policy, launch
 packages/engine/src/mcp/              MCP server + CLI
 packages/engine/test, bench           tests, fixtures, benchmark
-website/                              landing page and docs site (renders docs/*.md)
+website/                              landing, Cloud waitlist, Mac page, docs site (renders docs/*.md)
 ```
 
 ## License

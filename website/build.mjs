@@ -25,12 +25,13 @@ const DOCS = [
   ['benchmark', 'BENCHMARK.md', 'Results'],
   ['comparison', 'COMPARISON.md', 'Results'],
   ['faq', 'faq.md', 'Results'],
+  ['cloud-api', 'cloud-api.md', 'Cloud'],
 ];
 const linkMap = Object.fromEntries(DOCS.map(([slug, file]) => [file, slug + '.html']));
 const pages = DOCS.map(([slug, file, group]) => {
   let md = readFileSync(join(docsSrc, file), 'utf8');
   md = md.replace(/\]\(([A-Za-z-]+\.md)(#[^)]*)?\)/g, (m, f, h = '') => `](${linkMap[f] || f}${h})`);
-  const SHORT = { comparison: 'Comparison', 'xray-and-cursor': 'X-ray & human cursor', 'messy-pages': 'Pages without semantic tags' };
+  const SHORT = { comparison: 'Comparison', 'xray-and-cursor': 'X-ray & human cursor', 'messy-pages': 'Pages without semantic tags', 'cloud-api': 'Cloud API & usage' };
   const title = SHORT[slug] || (md.match(/^# (.+)$/m) || [, slug])[1].replace(/^Benchmark .*/, 'Benchmark');
   // Headings get ids so docs can link to sections (getting-started.html#everyday-browser-features).
   const html = marked.parse(md).replace(/<h([23])>(.+?)<\/h\1>/g, (_m, n, inner) => `<h${n} id="${inner.replace(/<[^>]+>/g, '').toLowerCase().replace(/&[a-z]+;/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}">${inner}</h${n}>`);
@@ -39,11 +40,11 @@ const pages = DOCS.map(([slug, file, group]) => {
 
 const shell = (p, i) => {
   const groups = [...new Set(DOCS.map((d) => d[2]))];
-  const nav = groups.map((g) => `<div class="sg"><b>${g}</b>${pages.filter((x) => x.group === g).map((x) => `<a href="${x.slug}.html"${x === p ? ' class="on"' : ''}>${x.title}</a>`).join('')}</div>`).join('');
+  const nav = groups.map((g) => `<div class="sg"><b>${g}</b>${pages.filter((x) => x.group === g).map((x) => `<a href="${x.slug}.html"${x === p ? ' class="on"' : ''}>${x.title}${x.slug === 'cloud-api' ? '<span class="soon-tag">soon</span>' : ''}</a>`).join('')}</div>`).join('');
   const prev = pages[i - 1], next = pages[i + 1];
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${p.title} · WhittleBrowser docs</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../docs.css"></head>
-<body class="docs"><header class="nav"><a class="brand" href="../"><span class="logo"></span>WhittleBrowser</a><nav><a href="../#how">How it works</a><a href="../#compare">Compare</a><a href="./" class="cur">Docs</a></nav><a class="btn small" href="getting-started.html">Get started</a></header>
+<body class="docs"><header class="nav"><a class="brand" href="../"><span class="logo"></span>WhittleBrowser</a><nav><a href="../#how">How it works</a><a href="../#compare">Compare</a><a href="./" class="cur">Docs</a><a href="../cloud.html">Cloud</a><a href="../mac.html">Mac app</a></nav><a class="btn small" href="getting-started.html">Get started</a></header>
 <div class="dwrap"><aside class="side-nav">${nav}</aside><main class="prose">${p.html}
 ${p.html.includes('class="chart"') ? '<script type="module" src="../charts.js"></script>' : ''}
 <div class="pn">${prev ? `<a href="${prev.slug}.html"><small>Previous</small>${prev.title}</a>` : '<span></span>'}${next ? `<a class="nx" href="${next.slug}.html"><small>Next</small>${next.title}</a>` : ''}</div></main></div></body></html>`;

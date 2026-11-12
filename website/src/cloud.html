@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WhittleBrowser Cloud · join the waitlist</title>
+<meta name="description" content="Hosted browsers for AI agents behind an API, built on the token-lean WhittleBrowser engine. When a login, CAPTCHA or 2FA needs a person, you finish it in a live view and the agent carries on. Join the waitlist.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#FBFAF7">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="nav">
+  <a class="brand" href="./"><span class="logo"></span>WhittleBrowser</a>
+  <nav>
+    <a href="./#products">Products</a>
+    <a href="./#how">How it works</a>
+    <a href="./#compare">Compare</a>
+    <a href="./#safety">Safety</a>
+    <a href="docs/">Docs</a>
+    <a href="cloud.html" class="cur">Cloud</a>
+    <a href="mac.html">Mac app</a>
+  </nav>
+  <a class="btn small" href="docs/getting-started.html">Get started</a>
+</header>
+
+<section class="page-hero split glow-zone"><div class="aurora" aria-hidden="true"><i></i><i></i></div>
+  <div class="reveal">
+    <p class="eyebrow"><span class="soon-pill">Waitlist</span> WhittleBrowser Cloud</p>
+    <h1>Hosted browsers for agents, <em>with you in the loop.</em></h1>
+    <p class="lead">Cloud runs the token-lean WhittleBrowser engine on our servers, behind an API. When a login, CAPTCHA or 2FA code needs a person, you finish it in a live view and the agent carries on.</p>
+    <form class="waitlist" id="waitlist" data-interest="cloud" data-name="Cloud" novalidate>
+      <label for="wl-email">Get early access</label>
+      <div class="wl-row">
+        <input id="wl-email" name="email" type="email" required autocomplete="email" placeholder="you@company.com" maxlength="254">
+        <input class="hp" name="company" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <button class="btn" type="submit">Join the waitlist</button>
+      </div>
+      <p class="wl-note">We only use your email to tell you when Cloud opens.</p>
+      <p class="wl-msg" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+  <div class="hdemo reveal" id="hdemo" aria-hidden="true">
+    <div class="win">
+      <div class="chrome"><span class="dots"><i></i><i></i><i></i></span><span class="addr">app.example.com</span><span class="live"><i></i>Live view</span></div>
+      <div class="hpage" id="hpage">
+        <div class="hbanner" id="hbanner">Agent is waiting for you · 2FA code</div>
+        <div class="hcard on" id="h-login"><h4>Sign in</h4><div class="hf"><small>Email</small><span id="hf-email"></span></div><div class="hf"><small>Password</small><span id="hf-pw"></span></div><span class="hbtn" id="h-signin">Sign in</span></div>
+        <div class="hcard" id="h-code"><h4>Enter your 6-digit code</h4><div class="hf code"><small>Code</small><span id="hf-code"></span></div><span class="hbtn" id="h-verify">Verify</span></div>
+        <div class="hcard" id="h-dash"><h4>Invoices</h4><div class="hrow"><span>INV-1042</span><b>$1,280.00</b></div><div class="hrow"><span>INV-1041</span><b>$640.00</b></div><div class="hrow"><span>INV-1039</span><b>$2,115.50</b></div></div>
+        <svg class="hcur agent" id="hcur-a" viewBox="0 0 24 24"><path d="M4 2l15 10.5-6.6 1.3 3.9 7.4-2.9 1.5-3.9-7.5L4 20z"/></svg>
+        <svg class="hcur you" id="hcur-u" viewBox="0 0 24 24"><path d="M4 2l15 10.5-6.6 1.3 3.9 7.4-2.9 1.5-3.9-7.5L4 20z"/></svg>
+        <span class="hlab agent" id="hlab-a">agent</span><span class="hlab you" id="hlab-u">you</span>
+      </div>
+    </div>
+    <ol class="hfeed" id="hfeed"></ol>
+  </div>
+</section>
+
+<section class="sec" id="expect">
+  <div class="sec-head reveal">
+    <span class="kicker">What to expect</span>
+    <h2>The same lean engine, <em>without the setup.</em></h2>
+  </div>
+  <div class="products">
+    <article class="product reveal"><h3>Browsers through an API</h3><p>The same nine tools as the engine, with its small page views, running in browsers we host. Nothing to install and no machine of yours to keep awake.</p></article>
+    <article class="product reveal"><h3>A person in the loop</h3><p>When the agent hits a login, CAPTCHA or 2FA prompt, you complete it yourself in a live view. We don't solve CAPTCHAs or hide that the browser is automated.</p></article>
+    <article class="product reveal"><h3>Safe by default</h3><p>Secrets and hidden prompt injections stay away from the model, and sensitive sites and irreversible actions wait for you, as they do locally.</p></article>
+  </div>
+  <p class="plain reveal">Cloud is not open yet. There is no sign-up, no billing and no date; the waitlist is the only thing here today. <b>You don't need to wait to start:</b> the engine is free and runs on your own machine. <a href="docs/getting-started.html">Get started with the engine →</a></p>
+</section>
+
+<footer class="foot">
+  <div><span class="brand"><span class="logo"></span>WhittleBrowser</span><p>Lean, safe, honest browsing for AI agents.</p></div>
+  <div class="cols">
+    <div><b>Engine</b><a href="docs/getting-started.html">Getting started</a><a href="docs/claude-code.html">Use with Claude Code</a><a href="docs/how-it-works.html">How it works</a><a href="docs/protocol.html">Protocol</a><a href="docs/safety.html">Safety model</a></div>
+    <div><b>Results</b><a href="docs/benchmark.html">Benchmark</a><a href="docs/comparison.html">Comparison</a><a href="docs/faq.html">FAQ</a></div>
+    <div><b>Coming</b><a href="cloud.html">Cloud · waitlist</a><a href="mac.html">Mac app · coming soon</a></div>
+    <div><b>Links</b><a href="https://www.npmjs.com/package/@whittlebrowser/engine">npm package</a><a href="https://github.com/vasanth7781/whittlebrowser-engine">Source on GitHub</a></div>
+  </div>
+</footer>
+<script type="module" src="fx.js"></script>
+<script type="module" src="page.js"></script>
+</body>
+</html>
+
