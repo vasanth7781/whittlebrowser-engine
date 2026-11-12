@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { parse } from 'yaml';
 // @ts-expect-error plain .mjs script with no type declarations
 import { build as buildCharts } from '../bench/charts.mjs';
 import { join, dirname } from 'node:path';
@@ -81,19 +80,24 @@ describe('docs', () => {
     expect(readFileSync(join(repo, 'CHANGELOG.md'), 'utf8')).toContain(`## ${pkg.version} (`);
   });
 
-  it('deploy the site on website or docs changes only, to the Pages project the config names', () => {
+  it('keep the Pages config, the waitlist function and the database table consistent', () => {
     const repo = join(docs, '..');
-    const wf = parse(readFileSync(join(repo, '.github/workflows/deploy-site.yml'), 'utf8'));
-    expect(wf.on.push.branches).toEqual(['main']);
-    expect(wf.on.push.paths).toEqual(expect.arrayContaining(['website/**', 'docs/**']));
-    expect(wf.on.push.paths.some((p: string) => p.startsWith('packages/') || p === '**')).toBe(false); // engine-only changes do not redeploy the site
-    expect(wf.on).toHaveProperty('workflow_dispatch');
-    const toml = readFileSync(join(repo, 'website/wrangler.toml'), 'utf8');
-    const name = toml.match(/^name = "([^"]+)"/m)![1];
-    const out = toml.match(/^pages_build_output_dir = "([^"]+)"/m)![1];
-    const deploy = wf.jobs.deploy.steps.find((st: { name?: string }) => st.name === 'Deploy to Cloudflare Pages');
-    expect(deploy.with.command).toContain(`pages deploy ${out} --project-name=${name}`);
-    expect(deploy.with.workingDirectory).toBe('website');
-    expect(toml).toMatch(/binding = "DB"/);       // functions/api/waitlist.js reads env.DB
+    const site = join(repo, 'website');
+    const toml = readFileSync(join(site, 'wrangler.toml'), 'utf8');
+    const binding = toml.match(/^binding = "([^"]+)"/m)![1];
+    expect(toml.match(/^name = "([^"]+)"/m)![1]).toBe('whittlebrowser');
+    expect(toml.match(/^pages_build_output_dir = "([^"]+)"/m)![1]).toBe('dist');          // what website/build.mjs writes
+    expect(readFileSync(join(site, 'build.mjs'), 'utf8')).toContain("join(here, 'dist')");
+    // the function reads the binding the config declares, and writes the columns the schema defines
+    const fn = readFileSync(join(site, 'functions/api/waitlist.js'), 'utf8');
+    expect(fn).toContain(`env.${binding}`);
+    const schema = readFileSync(join(site, 'schema.sql'), 'utf8');
+    expect(schema).toMatch(/CREATE TABLE IF NOT EXISTS waitlist/);
+    for (const col of ['email', 'interest', 'created_at']) {
+      expect(fn, `insert column ${col}`).toContain(col);
+      expect(schema, `schema column ${col}`).toContain(col);
+    }
+    // the project is connected to Git, so a second deploy workflow would publish the same site twice
+    expect(existsSync(join(repo, '.github/workflows/deploy-site.yml'))).toBe(false);
   });
 });

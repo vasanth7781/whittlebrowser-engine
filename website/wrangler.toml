@@ -1,4 +1,5 @@
-# Cloudflare Pages settings for the website. The site is deployed by .github/workflows/deploy-site.yml.
+# Cloudflare Pages settings for the website. The Pages project is connected to this repository (see DEPLOY.md), so every
+# push to main builds and deploys it.
 # Settings in this file take over from the dashboard, so keep bindings here.
 name = "whittlebrowser"
 pages_build_output_dir = "dist"
