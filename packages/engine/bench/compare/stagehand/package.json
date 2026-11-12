@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@browserbasehq/stagehand": "4.2.1",
+    "@browserbasehq/stagehand": "4.4.0",
     "js-tiktoken": "^1.0.21",
     "zod": "^4.0.0"
   }
