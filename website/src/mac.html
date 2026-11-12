@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WhittleBrowser for Mac · coming soon</title>
+<meta name="description" content="A light desktop browser where the AI agent reads compact pages instead of heavy ones, and you can watch everything it does. Per-site AI controls, X-ray, a ghost cursor and chat. Coming soon.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#FBFAF7">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="nav">
+  <a class="brand" href="./"><span class="logo"></span>WhittleBrowser</a>
+  <nav>
+    <a href="./#products">Products</a>
+    <a href="./#how">How it works</a>
+    <a href="./#compare">Compare</a>
+    <a href="./#safety">Safety</a>
+    <a href="docs/">Docs</a>
+    <a href="cloud.html">Cloud</a>
+    <a href="mac.html" class="cur">Mac app</a>
+  </nav>
+  <a class="btn small" href="docs/getting-started.html">Get started</a>
+</header>
+
+<section class="page-hero split glow-zone"><div class="aurora" aria-hidden="true"><i></i><i></i></div>
+  <div class="reveal">
+    <p class="eyebrow"><span class="soon-pill">Coming soon</span> WhittleBrowser for Mac</p>
+    <h1>A light browser with the <em>agent built in.</em></h1>
+    <p class="lead">The same engine that cuts your agent's token use, in a slim desktop browser. The AI reads compact pages, you watch it work with X-ray and a ghost cursor, and nothing risky happens without your click. It isn't released yet and there is no download.</p>
+    <div class="cta">
+      <a class="btn" href="index.html#savings">See the token savings</a>
+      <a class="btn ghost" href="docs/getting-started.html">Try the engine today</a>
+    </div>
+    <p class="soon">The screenshots on this page are from the app in development and will change before release.</p>
+  </div>
+  <div class="mac-visual reveal" id="mac-visual" data-tilt>
+    <img src="assets/shell-xray.png" alt="The WhittleBrowser Mac app with X-ray badges over a page and the chat panel open">
+    <span class="chip c1"><i></i>X-ray · 13 controls</span>
+    <span class="chip c2">Tokens saved <b id="mchip" data-to="514">0</b></span>
+    <span class="chip c3">Risky click waits for you</span>
+  </div>
+</section>
+
+<!-- ============ CURSOR + LIVE ============ -->
+<section class="sec split2 rev">
+  <div class="shot reveal"><img src="assets/shell-cursor.png" alt="Ghost cursor and live steps in WhittleBrowser" loading="lazy"></div>
+  <div class="sec-head left reveal">
+    <span class="kicker">Ghost cursor · live steps</span>
+    <h2>Watch it work. <em>Stop it any time.</em></h2>
+    <p>Before every click or keystroke, a cursor glides to the target, a ring highlights it, and a caption says what's about to happen. The Agent panel streams each step, and every entry expands to show exactly what was sent to the model and how many tokens it cost.</p>
+    <ul class="ticks">
+      <li>Risky actions (pay, delete, send, publish) wait for <b>your</b> click</li>
+      <li>CAPTCHAs and 2FA are handed to you, then the agent resumes</li>
+      <li>One click turns AI off for a site</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ CHAT ============ -->
+<section class="sec split2" id="chat">
+  <div class="sec-head left reveal">
+    <span class="kicker">Built-in chat · ⌘⇧A</span>
+    <h2>Your Claude or Codex, <em>right in the browser.</em></h2>
+    <p>Ask about the page or hand the agent a task. The chat runs on the <b>Claude Code or Codex CLI you're already signed into</b>, so there are no API keys and no extra bill. Every turn goes through the same gates: the AI dot, auto-pause and your approvals.</p>
+    <ul class="ticks">
+      <li>Pick Claude Code or Codex per conversation</li>
+      <li>Only the browser tools are allowed: no shell, no file access</li>
+      <li>Savings meter: tokens sent vs saved, live</li>
+      <li>Start page with example tasks and lifetime stats</li>
+    </ul>
+  </div>
+  <div class="shot reveal"><img src="assets/shell-chat.png" alt="Built-in chat answering from the page" loading="lazy"></div>
+</section>
+
+<!-- ============ STUDIO ============ -->
+<section class="sec split2 rev" id="studio">
+  <div class="shot zoomy reveal"><img src="assets/studio.png" alt="Demo Studio editor" loading="lazy"></div>
+  <div class="sec-head left reveal">
+    <span class="kicker">Demo Studio · ⌘⇧R</span>
+    <h2>Record once. <em>Ship a polished demo.</em></h2>
+    <p>Hit record, then use the page yourself or let the agent work. The Studio turns the capture into a product video: the camera eases into every click, captions come from the agent's steps, idle time speeds up, and the window sits on a gradient with intro and outro cards. Export WebM or MP4.</p>
+    <ul class="ticks">
+      <li>Auto-zoom, click ripples, smooth cursor</li>
+      <li>Captions straight from agent steps</li>
+      <li>Human-like cursor paths and typing for natural-looking runs</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ GALLERY ============ -->
+<section class="sec" id="gallery">
+  <div class="sec-head reveal"><span class="kicker">In the browser</span><h2>Slim by design.</h2><p>One row of chrome. Tabs as a favicon rail. The agent panel only when you want it.</p></div>
+  <div class="gallery">
+    <figure class="reveal"><img src="assets/shell-start.png" alt="Start page with live stats" loading="lazy"><figcaption>Start page: live stats and example tasks</figcaption></figure>
+    <figure class="reveal"><img src="assets/shell-tour.png" alt="First-run tour" loading="lazy"><figcaption>A 4-step first-run tour</figcaption></figure>
+    <figure class="reveal"><img src="assets/shell-approval.png" alt="Approval card" loading="lazy"><figcaption>Risky click waits for you</figcaption></figure>
+    <figure class="reveal"><img src="assets/shell-paused.png" alt="Auto-paused on a payment page" loading="lazy"><figcaption>Auto-paused on a payment page</figcaption></figure>
+    <figure class="reveal"><img src="assets/shell-aimenu.png" alt="AI dot menu" loading="lazy"><figcaption>Off · Ask · Allowed per site</figcaption></figure>
+    <figure class="reveal"><img src="assets/shell-menu.png" alt="RAM meter and Tab Sleeper" loading="lazy"><figcaption>RAM meter and Tab Sleeper</figcaption></figure>
+    <figure class="reveal"><img src="assets/shell-xray.png" alt="X-ray badges over a real page, with the chat panel open" loading="lazy"><figcaption>X-ray over a real page</figcaption></figure>
+    <figure class="reveal"><img src="assets/shell-research.png" alt="Research split view: the user's tab next to three live agent tabs" loading="lazy"><figcaption>Research: your tab beside live agent tabs</figcaption></figure>
+  </div>
+</section>
+
+<footer class="foot">
+  <div><span class="brand"><span class="logo"></span>WhittleBrowser</span><p>Lean, safe, honest browsing for AI agents.</p></div>
+  <div class="cols">
+    <div><b>Engine</b><a href="docs/getting-started.html">Getting started</a><a href="docs/claude-code.html">Use with Claude Code</a><a href="docs/how-it-works.html">How it works</a><a href="docs/protocol.html">Protocol</a><a href="docs/safety.html">Safety model</a></div>
+    <div><b>Results</b><a href="docs/benchmark.html">Benchmark</a><a href="docs/comparison.html">Comparison</a><a href="docs/faq.html">FAQ</a></div>
+    <div><b>Coming</b><a href="cloud.html">Cloud · waitlist</a><a href="mac.html">Mac app · coming soon</a></div>
+    <div><b>Links</b><a href="https://www.npmjs.com/package/@whittlebrowser/engine">npm package</a><a href="https://github.com/vasanth7781/whittlebrowser-engine">Source on GitHub</a></div>
+  </div>
+</footer>
+<script type="module" src="fx.js"></script>
+<script type="module" src="page.js"></script>
+</body>
+</html>
+

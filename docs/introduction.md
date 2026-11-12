@@ -1,6 +1,6 @@
 # Introduction
 
-**WhittleBrowser** is an open-source engine that lets an AI agent use a web browser while sending the model far fewer tokens, and keeping secrets and hidden prompt injections away from it. It runs as an **MCP server**, so Claude Code, Cursor, Codex, VS Code and any other MCP client can use it, and it is also a TypeScript library.
+**WhittleBrowser** lets an AI agent use a web browser while sending the model far fewer tokens, and keeping secrets and hidden prompt injections away from it. It runs as an **MCP server**, so Claude Code, Cursor, Codex, VS Code and any other MCP client can use it, and it is also a TypeScript library. It is free and MIT-licensed.
 
 ## What it does
 
@@ -9,6 +9,12 @@
 - **Watchable.** X-ray overlays what the agent sees, and an optional ghost cursor shows what it is about to do.
 - **Fast at research.** Read several pages in parallel and get one compact digest.
 - **Honest.** It identifies itself and hands CAPTCHAs to a person instead of trying to defeat bot protection.
+
+## What's available
+
+- **Engine** (this documentation): open source and available now. It is the MCP server and library described on every page here.
+- **Cloud**: the engine hosted behind an API. Not open yet; see [Cloud API and usage](cloud-api.html) and the waitlist.
+- **WhittleBrowser for Mac**: a desktop browser built on the engine. Coming soon.
 
 ## Where to next
 

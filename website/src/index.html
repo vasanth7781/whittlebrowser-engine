@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>WhittleBrowser · the browser AI agents can afford and you can trust</title>
-<meta name="description" content="A lightweight Chromium browser and agent protocol: 96% fewer tokens than Playwright MCP, secrets and hidden prompt injections never reach the LLM, and you can watch every move.">
+<title>WhittleBrowser · let your AI agent browse with 96% fewer tokens</title>
+<meta name="description" content="WhittleBrowser shows web pages to AI models as compact text and sends only what changed: 96% fewer tokens per page view than Playwright MCP. One command for Claude Code, Codex and Cursor. Secrets and hidden prompt injections never reach the model.">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <meta name="theme-color" content="#FBFAF7">
 <link rel="stylesheet" href="style.css">
@@ -13,29 +13,31 @@
 <header class="nav">
   <a class="brand" href="./"><span class="logo"></span>WhittleBrowser</a>
   <nav>
+    <a href="#products">Products</a>
     <a href="#how">How it works</a>
-    <a href="#xray">X-ray</a>
-    <a href="#research">Research</a>
-    <a href="#chat">Chat</a>
-    <a href="#studio">Studio</a>
     <a href="#compare">Compare</a>
     <a href="#safety">Safety</a>
-    <a href="docs/">Docs</a><a href="https://www.npmjs.com/package/@whittlebrowser/engine">npm</a><a href="https://github.com/vasanth7781/whittlebrowser-engine">GitHub</a>
+    <a href="docs/">Docs</a>
+    <a href="cloud.html">Cloud</a>
+    <a href="mac.html">Mac app</a>
   </nav>
   <a class="btn small" href="docs/getting-started.html">Get started</a>
 </header>
 
 <!-- ============ HERO ============ -->
-<section class="hero">
+<section class="hero glow-zone"><div class="aurora" aria-hidden="true"><i></i><i></i></div>
   <div class="hero-copy reveal">
-    <p class="eyebrow">Open source · Chromium · MCP server</p>
-    <h1>The browser AI agents can <em>afford</em>, and you can <em>trust</em>.</h1>
-    <p class="lead">WhittleBrowser shows web pages to LLMs as compact, ref-stable text and sends only what changed after each action. That's <b>96% fewer tokens</b> than Playwright MCP. Secrets and hidden prompt injections <b>never reach the model</b>, and you can watch every move it makes.</p>
+    <p class="eyebrow">Fewer tokens · same tasks · any MCP agent</p>
+    <h1>Your AI agent reads the web for <em>96% fewer tokens.</em></h1>
+    <p class="lead">WhittleBrowser shows pages to the model as compact text and sends only what changed after each click, so big pages stop eating your context window and your budget. Measured: <b>96% fewer tokens per page view</b> than Playwright MCP, across 11 pages. Secrets and hidden prompt injections never reach the model, and you can watch every move.</p>
+    <div class="code hero-cmd"><button class="copy">Copy</button><pre>claude mcp add whittlebrowser -- npx -y @whittlebrowser/engine</pre></div>
+    <p class="cmd-note">One command. Works with Claude Code, Codex, Cursor and any MCP client · needs Node 22 and Chrome</p>
     <div class="cta">
-      <a class="btn" href="docs/use-with-ai-tools.html">Use it with Claude, Cursor, Codex</a>
-      <a class="btn ghost" href="#demo">Watch it work ↓</a>
+      <a class="btn" href="#savings">See what you'd save ↓</a>
+      <a class="btn ghost" href="#demo">Watch it work</a>
+      <a class="btn ghost" href="docs/use-with-ai-tools.html">Setup for your tool</a>
     </div>
-    <p class="soon"><span class="soon-pill">Coming soon</span> <b>Download for Mac</b>: a light, agentic browser. Until then, use the open-source engine with your own AI tools.</p>
+    <p class="soon"><span class="soon-pill">Waitlist</span> <a href="cloud.html"><b>WhittleBrowser Cloud</b></a> · <span class="soon-pill">Coming soon</span> <a href="mac.html"><b>WhittleBrowser for Mac</b></a>. The engine below works today with your own AI tools.</p>
   </div>
 
   <div class="demo reveal" id="demo">
@@ -100,6 +102,70 @@
   <div class="stat reveal"><b data-count="0" data-suffix=" / 7">0</b><span>planted secrets leaked<br><small>Playwright MCP: 7 / 7</small></span></div>
   <div class="stat reveal"><b data-count="0" data-suffix=" / 5">0</b><span>hidden injections passed<br><small>Playwright MCP: 5 / 5</small></span></div>
   <div class="stat reveal"><b data-count="4.0" data-suffix="×">0</b><span>smaller tool definitions<br><small>947 vs 3,747 tokens</small></span></div>
+</section>
+
+<!-- ============ SAVINGS ============ -->
+<section class="sec" id="savings">
+  <div class="sec-head reveal">
+    <span class="kicker">Token savings</span>
+    <h2>Same pages. <em>A fraction of the tokens.</em></h2>
+    <p>Every token your agent reads fills its context window and is billed. Here is what looking at the same 11 pages costs with each tool, and a calculator that uses the token counts we measured.</p>
+  </div>
+  <div class="savings reveal" id="savings-box">
+    <div class="sv-race">
+      <div class="sv-col pw"><div class="sv-h"><span>Playwright MCP</span><b id="sv-pw-k">0k</b></div><div class="dotgrid" id="dots-pw"></div></div>
+      <div class="sv-col ab"><div class="sv-h"><span>WhittleBrowser</span><b id="sv-ab-k">0k</b></div><div class="dotgrid" id="dots-ab"></div></div>
+      <small>Each dot is 1,000 tokens: everything the model receives to look at the same 11 pages (page text, prompts, tool definitions). <a href="docs/benchmark.html">How we measured →</a></small>
+    </div>
+    <div class="sv-calc">
+      <div class="sv-ctl">
+        <label for="sv-range">Page views per day <output id="sv-views">500</output></label>
+        <input type="range" id="sv-range" min="0" max="100" value="57">
+      </div>
+      <div class="sv-ctl">
+        <span class="sv-lab" id="sv-price-l">Your model's input price, per million tokens</span>
+        <div class="sv-price" role="group" aria-labelledby="sv-price-l">
+          <button type="button" data-price="1">$1</button><button type="button" class="on" data-price="3">$3</button><button type="button" data-price="5">$5</button><button type="button" data-price="15">$15</button>
+        </div>
+      </div>
+      <div class="sv-out">
+        <div class="sv-row pw"><span>Playwright MCP</span><b id="sv-pw-usd">$0</b><i id="sv-pw-bar"></i></div>
+        <div class="sv-row ab"><span>WhittleBrowser</span><b id="sv-ab-usd">$0</b><i id="sv-ab-bar"></i></div>
+        <div class="sv-save">Reading the same pages costs <b id="sv-save">$0</b> less a month<small id="sv-save-tok"></small></div>
+      </div>
+      <p class="sv-note">Page-reading input tokens times your price, over 30 days. Real bills also include output tokens and prompt caching, which this does not model. In our real agent runs, whole tasks used 31 to 47% fewer tokens than Playwright MCP, but on Claude Sonnet the dollar cost per task was still higher, so measure your own workload. <a href="docs/benchmark.html#with-a-real-agent">Full results →</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRODUCTS ============ -->
+<section class="sec" id="products">
+  <div class="sec-head reveal">
+    <span class="kicker">Products</span>
+    <h2>One engine. <em>Three ways to use it.</em></h2>
+    <p>The engine is the core and it is available now. Cloud runs it on our servers, and the Mac app puts it in a browser window.</p>
+  </div>
+  <div class="products">
+    <article class="product reveal">
+      <span class="pill live">Available now</span>
+      <h3>Engine</h3>
+      <p>An MCP server and TypeScript library that gives Claude Code, Cursor, Codex or any MCP client a real Chromium browser, at a fraction of the tokens.</p>
+      <pre><code>claude mcp add whittlebrowser -- npx -y @whittlebrowser/engine</code></pre>
+      <a class="more" href="docs/getting-started.html">Get started →</a>
+    </article>
+    <article class="product reveal">
+      <span class="pill">Waitlist</span>
+      <h3>Cloud</h3>
+      <p>The same engine, hosted. Run browsers for your agents through an API, and finish logins and CAPTCHAs yourself when the agent asks.</p>
+      <a class="more" href="cloud.html">Join the waitlist →</a>
+    </article>
+    <article class="product reveal">
+      <span class="pill">Coming soon</span>
+      <h3>Mac app</h3>
+      <p>A light desktop browser with the agent built in: per-site AI controls, X-ray, a ghost cursor, chat and a demo recorder.</p>
+      <a class="more" href="mac.html">See what's coming →</a>
+    </article>
+  </div>
 </section>
 
 <!-- ============ WHAT THE MODEL SEES ============ -->
@@ -236,27 +302,12 @@
   </div>
 </section>
 
-<!-- ============ CURSOR + LIVE ============ -->
-<section class="sec split2 rev">
-  <div class="shot reveal"><img src="assets/shell-cursor.png" alt="Ghost cursor and live steps in WhittleBrowser" loading="lazy"></div>
-  <div class="sec-head left reveal">
-    <span class="kicker">Ghost cursor · live steps</span>
-    <h2>Watch it work. <em>Stop it any time.</em></h2>
-    <p>Before every click or keystroke, a cursor glides to the target, a ring highlights it, and a caption says what's about to happen. The Agent panel streams each step, and every entry expands to show exactly what was sent to the model and how many tokens it cost.</p>
-    <ul class="ticks">
-      <li>Risky actions (pay, delete, send, publish) wait for <b>your</b> click</li>
-      <li>CAPTCHAs and 2FA are handed to you, then the agent resumes</li>
-      <li>One click turns AI off for a site</li>
-    </ul>
-  </div>
-</section>
-
 <!-- ============ RESEARCH ============ -->
 <section class="sec" id="research">
   <div class="sec-head reveal">
     <span class="kicker">Research mode</span>
     <h2>Read five pages <em>at once.</em></h2>
-    <p>Other agents open a result, read the whole thing, go back, and repeat. <code>research</code> opens the top results in parallel, reads each into a compact digest, and hands the model one message to compare. In the browser, the agent's tabs appear as live tiles next to yours, and your tab never loses focus.</p>
+    <p>Other agents open a result, read the whole thing, go back, and repeat. <code>research</code> opens the top results in parallel, reads each into a compact digest, and hands the model one message to compare.</p>
   </div>
   <div class="rdemo reveal" id="rdemo">
     <div class="lanes">
@@ -272,7 +323,6 @@
       <table><thead><tr><th>#</th><th>Page</th><th>Digest</th></tr></thead><tbody id="r-rows"></tbody></table>
     </div>
   </div>
-  <div class="shot wide reveal"><img src="assets/shell-research.png" alt="Research split view: the user's tab next to three live agent tabs" loading="lazy"></div>
 </section>
 
 <!-- ============ MESSY PAGES ============ -->
@@ -291,37 +341,6 @@
   </div>
 </section>
 
-<!-- ============ CHAT ============ -->
-<section class="sec split2" id="chat">
-  <div class="sec-head left reveal">
-    <span class="kicker">Built-in chat · ⌘⇧A</span>
-    <h2>Your Claude or Codex, <em>right in the browser.</em></h2>
-    <p>Ask about the page or hand the agent a task. The chat runs on the <b>Claude Code or Codex CLI you're already signed into</b>, so there are no API keys and no extra bill. Every turn goes through the same gates: the AI dot, auto-pause and your approvals.</p>
-    <ul class="ticks">
-      <li>Pick Claude Code or Codex per conversation</li>
-      <li>Only the browser tools are allowed: no shell, no file access</li>
-      <li>Savings meter: tokens sent vs saved, live</li>
-      <li>Start page with example tasks and lifetime stats</li>
-    </ul>
-  </div>
-  <div class="shot reveal"><img src="assets/shell-chat.png" alt="Built-in chat answering from the page" loading="lazy"></div>
-</section>
-
-<!-- ============ STUDIO ============ -->
-<section class="sec split2 rev" id="studio">
-  <div class="shot zoomy reveal"><img src="assets/studio.png" alt="Demo Studio editor" loading="lazy"></div>
-  <div class="sec-head left reveal">
-    <span class="kicker">Demo Studio · ⌘⇧R</span>
-    <h2>Record once. <em>Ship a polished demo.</em></h2>
-    <p>Hit record, then use the page yourself or let the agent work. The Studio turns the capture into a product video: the camera eases into every click, captions come from the agent's steps, idle time speeds up, and the window sits on a gradient with intro and outro cards. Export WebM or MP4.</p>
-    <ul class="ticks">
-      <li>Auto-zoom, click ripples, smooth cursor</li>
-      <li>Captions straight from agent steps</li>
-      <li>Human-like cursor paths and typing for natural-looking runs</li>
-    </ul>
-  </div>
-</section>
-
 <!-- ============ SAFETY ============ -->
 <section class="sec" id="safety">
   <div class="sec-head reveal">
@@ -336,7 +355,7 @@
     <div class="card reveal"><h4>Approvals</h4><p>Pay, delete, send, publish, cross-site data jumps and uploads need your OK.</p></div>
     <div class="card reveal"><h4>Isolated agent</h4><p>Runs in a CDP isolated world, so page scripts can't tamper with what it sees.</p></div>
     <div class="card reveal"><h4>Honest identity</h4><p>UA token, Web Bot Auth signatures (verified with Cloudflare's checker), robots.txt. No spoofing, no CAPTCHA solving.</p></div>
-    <div class="card reveal"><h4>Light on RAM</h4><p>Tab Sleeper freezes and discards background tabs within a memory budget; a meter shows per-tab MB.</p></div>
+    <div class="card reveal"><h4>Auditable</h4><p>The in-page agent, the privacy filter and the leak tests are MIT-licensed source you can read.</p></div>
   </div>
 </section>
 
@@ -363,25 +382,10 @@
         <tr><td>Watch the agent: cursor, X-ray, live steps</td><td class="us"><b>Yes</b></td><td>Headed window</td><td>Headed window</td><td>Session replay (cloud)</td><td>Agent view</td></tr>
         <tr><td>Parallel research across tabs</td><td class="us"><b>Built in</b></td><td>no</td><td>Multiple agents</td><td>no</td><td>varies</td></tr>
         <tr><td>Clickable divs, React onClick, div modals</td><td class="us"><b>Handler probe + role inference</b></td><td>Accessibility tree + cursor hints</td><td>DOM + vision</td><td>Accessibility tree + LLM</td><td>not published</td></tr>
-        <tr><td>Built-in chat without API keys</td><td class="us"><b>Claude Code / Codex CLI</b></td><td>n/a</td><td>n/a</td><td>n/a</td><td>Vendor subscription</td></tr>
-        <tr><td>Demo video studio</td><td class="us"><b>Built in</b></td><td>Trace / video files</td><td>GIF output</td><td>Session replay</td><td>no</td></tr>
         <tr><td>Bot walls</td><td class="us">Hand-off to you + Web Bot Auth</td><td>—</td><td>Stealth / cloud browsers</td><td>Cloud browsers</td><td>Your session</td></tr>
         <tr><td>Runs locally · open source</td><td class="us"><b>Yes · yes</b></td><td>Yes · yes</td><td>Yes · yes</td><td>Yes · yes</td><td>Cloud LLM · closed</td></tr>
       </tbody>
     </table>
-  </div>
-</section>
-
-<!-- ============ GALLERY ============ -->
-<section class="sec" id="gallery">
-  <div class="sec-head reveal"><span class="kicker">In the browser</span><h2>Slim by design.</h2><p>One row of chrome. Tabs as a favicon rail. The agent panel only when you want it.</p></div>
-  <div class="gallery">
-    <figure class="reveal"><img src="assets/shell-start.png" alt="Start page with live stats" loading="lazy"><figcaption>Start page: live stats and example tasks</figcaption></figure>
-    <figure class="reveal"><img src="assets/shell-tour.png" alt="First-run tour" loading="lazy"><figcaption>A 4-step first-run tour</figcaption></figure>
-    <figure class="reveal"><img src="assets/shell-approval.png" alt="Approval card" loading="lazy"><figcaption>Risky click waits for you</figcaption></figure>
-    <figure class="reveal"><img src="assets/shell-paused.png" alt="Auto-paused on a payment page" loading="lazy"><figcaption>Auto-paused on a payment page</figcaption></figure>
-    <figure class="reveal"><img src="assets/shell-aimenu.png" alt="AI dot menu" loading="lazy"><figcaption>Off · Ask · Allowed per site</figcaption></figure>
-    <figure class="reveal"><img src="assets/shell-menu.png" alt="RAM meter and Tab Sleeper" loading="lazy"><figcaption>RAM meter and Tab Sleeper</figcaption></figure>
   </div>
 </section>
 
@@ -411,11 +415,14 @@ pnpm bench:agent --smoke         <span class="c"># real-agent run through Claude
 <footer class="foot">
   <div><span class="brand"><span class="logo"></span>WhittleBrowser</span><p>Lean, safe, honest browsing for AI agents.</p></div>
   <div class="cols">
-    <div><b>Docs</b><a href="docs/getting-started.html">Getting started</a><a href="docs/claude-code.html">Use with Claude Code</a><a href="docs/how-it-works.html">How it works</a><a href="docs/protocol.html">Protocol</a></div>
-    <div><b>Features</b><a href="docs/xray-and-cursor.html">X-ray & cursor</a><a href="docs/research.html">Research mode</a><a href="docs/safety.html">Safety model</a><a href="docs/benchmark.html">Benchmark</a></div>
-    <div><b>More</b><a href="docs/comparison.html">Comparison</a><a href="docs/faq.html">FAQ</a><a href="https://www.npmjs.com/package/@whittlebrowser/engine">npm package</a><a href="https://github.com/vasanth7781/whittlebrowser-engine">GitHub</a></div>
+    <div><b>Engine</b><a href="docs/getting-started.html">Getting started</a><a href="docs/claude-code.html">Use with Claude Code</a><a href="docs/how-it-works.html">How it works</a><a href="docs/protocol.html">Protocol</a><a href="docs/safety.html">Safety model</a></div>
+    <div><b>Results</b><a href="docs/benchmark.html">Benchmark</a><a href="docs/comparison.html">Comparison</a><a href="docs/faq.html">FAQ</a></div>
+    <div><b>Coming</b><a href="cloud.html">Cloud · waitlist</a><a href="mac.html">Mac app · coming soon</a></div>
+    <div><b>Links</b><a href="https://www.npmjs.com/package/@whittlebrowser/engine">npm package</a><a href="https://github.com/vasanth7781/whittlebrowser-engine">Source on GitHub</a></div>
   </div>
 </footer>
+<script type="module" src="fx.js"></script>
+<script type="module" src="savings.js"></script>
 <script type="module" src="main.js"></script>
 <script type="module" src="charts.js"></script>
 </body>
